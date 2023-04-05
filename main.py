@@ -39,3 +39,4 @@ while os.path.isfile(f"digits/digit{image_numer}.png"):
     finally:
         image_numer += 1
         
+#nice
