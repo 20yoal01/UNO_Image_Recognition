@@ -1,61 +1,44 @@
-import tensorflow_hub as hub
-import cv2
-import numpy
-import tensorflow as tf
-import pandas as pd
+import cv2 as cv
+import numpy as np
 
-# Carregar modelos
-detector = hub.load("https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1")
-labels = pd.read_csv('labels.csv',sep=';',index_col='ID')
-labels = labels['OBJECT (2017 REL.)']
+PATH = 'UNO Syn/UNO.jpg'
 
-cap = cv2.VideoCapture(0)
+def resize(img, scale_percent=.05):
+    width = int(img.shape[1] * scale_percent)
+    height = int(img.shape[0] * scale_percent)
+    dim = (width, height)
+    return cv.resize(img, dim, interpolation=cv.INTER_AREA)
 
-width = 512
-height = 512
+img = resize(cv.imread(r'C:\Users\eyoalxa\Documents\Python OpenCV\OpenCV Course\Photos\20230406_152117.jpg'))
+#cv.imshow('UNO', img)
 
-while(True):
-    #Capture frame-by-frame
-    ret, frame = cap.read()
-    
-    #Resize to respect the input_shape
-    inp = cv2.resize(frame, (width , height ))
+grey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+blur = cv.GaussianBlur(grey, (5,5), cv.BORDER_DEFAULT)
 
-    #Convert img to RGB
-    rgb = cv2.cvtColor(inp, cv2.COLOR_BGR2RGB)
+t_lower = 100  # Lower Threshold
+t_upper = 200  # Upper threshold
+aperture_size = 3  # Aperture size
 
-    #Is optional but i recommend (float convertion and convert img to tensor image)
-    rgb_tensor = tf.convert_to_tensor(rgb, dtype=tf.uint8)
+canny = cv.Canny(blur, 50, 150, apertureSize=aperture_size)
+ret, thresh = cv.threshold(canny, 125, 255, cv.THRESH_BINARY)
+contours, hierarchies = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) 
+#cv.imshow('Canny', canny)
 
-    #Add dims to rgb_tensor
-    rgb_tensor = tf.expand_dims(rgb_tensor , 0)
-    
-    boxes, scores, classes, num_detections = detector(rgb_tensor)
-    
-    pred_labels = classes.numpy().astype('int')[0]
-    
-    pred_labels = [labels[i] for i in pred_labels]
-    pred_boxes = boxes.numpy()[0].astype('int')
-    pred_scores = scores.numpy()[0]
-   
-   #loop throughout the detections and place a box around it  
-    for score, (ymin,xmin,ymax,xmax), label in zip(pred_scores, pred_boxes, pred_labels):
-        if score < 0.5:
-            continue
-            
-        score_txt = f'{100 * round(score,0)}'
-        img_boxes = cv2.rectangle(rgb,(xmin, ymax),(xmax, ymin),(0,255,0),1)      
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(img_boxes,label,(xmin, ymax-10), font, 0.5, (255,0,0), 1, cv2.LINE_AA)
-        cv2.putText(img_boxes,score_txt,(xmax, ymax-10), font, 0.5, (255,0,0), 1, cv2.LINE_AA)
+mask = np.zeros(shape=img.shape, dtype='uint8')
 
+cv.drawContours(mask, contours, -1, (255,255,255), thickness=cv.FILLED)
 
+#cv.imshow('A', img)
 
-    #Display the resulting frame
-    cv2.imshow('black and white',img_boxes)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+#cv.imshow('A', mask)
 
-# When everything done, release the capture
-cap.release()
-cv2.destroyAllWindows()
+blank = np.zeros(shape=img.shape, dtype='uint8')
+blank[:] = (0, 0, 0)
+
+cv.copyTo(img, mask, blank)
+cv.normalize(mask.copy(), None, 0, 255, cv.NORM_MINMAX, cv.CV_8UC1)
+
+cv.imshow('Blank', blank)
+cv.imshow('Contours', mask)
+cv.imwrite(PATH, canny)
+cv.waitKey(0)
