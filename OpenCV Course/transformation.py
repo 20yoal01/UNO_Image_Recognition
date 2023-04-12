@@ -41,7 +41,7 @@ def rotate(img, angle, rotPoint=None):
 # Enlaring image: INTER_LINEAR, INTER_CUBIC (CUBIC IS SLOWER BUT BETTER)
 # Shrinking image: INTER_AREA
 
-img = cv.imread('Photos/20230406_151337.jpg')
+img = cv.imread('OpenCV Course/Photos/20230406_151337.jpg')
 img_resized = rescaleFrame(img)
 translated = translate(img_resized, 100, 100)
 rotated = rotate(img_resized, -45)

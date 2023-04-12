@@ -8,7 +8,7 @@ def rescaleFrame(frame, scale=.05):
 
     return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
 
-img = cv.imread('Photos/20230406_151337.jpg')
+img = cv.imread('OpenCV Course/Photos/20230406_151337.jpg')
 img_resized = rescaleFrame(img) 
 
 #cv.imshow('UNO', img_resized)
