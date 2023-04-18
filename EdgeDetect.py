@@ -15,7 +15,7 @@ class ED:
 
         canny = cv.Canny(blur3, t_lower, t_upper, apertureSize=aperture_size)
 
-        cv.imshow('canny', canny)
+        #cv.imshow('canny', canny)
 
         # Dilate the edges to close any gaps in the white outline
         kernel = np.ones((5,5),np.uint8)
@@ -34,7 +34,7 @@ class ED:
         #cv.imshow('A', mask)
 
         blank = np.zeros(shape=img.shape, dtype='uint8')
-        blank[:] = (0, 0, 255)
+        blank[:] = (0, 0, 0)
 
         cv.copyTo(img, mask, blank)
         cv.normalize(mask.copy(), None, 0, 255, cv.NORM_MINMAX, cv.CV_8UC1)
