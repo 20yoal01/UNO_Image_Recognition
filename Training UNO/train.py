@@ -72,13 +72,13 @@ def extract_uno(img):
     blank = np.zeros(shape=img.shape, dtype='uint8')
     blank[:] = (255, 255, 255)
  
-    mask_cropped = mask[y:y+h, x:x+w]
-    masked_img = img[y:y+h, x:x+w]
-    cv.copyTo(masked_img, mask_cropped, mask_cropped)  
+    #mask_cropped = mask[y:y+h, x:x+w]
+    #masked_img = img[y:y+h, x:x+w]
+    cv.copyTo(img, mask, blank)  
     #cv.rectangle(blank, (135, 145), (blank.shape[1]//5,
     #blank.shape[0]//7), (0, 255, 0), thickness=3)
     #cv.normalize(mask.copy(), mask, 0, 255, cv.NORM_MINMAX)
-    return masked_img
+    return mask
 
 
 
