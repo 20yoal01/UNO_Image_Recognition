@@ -30,7 +30,7 @@ def translate(img, x, y):
     dimensions = (img.shape[1], img.shape[0])
     return cv.warpAffine(img, transMat, dimensions)
 
-def shearX(img, shearFactor=0.5):
+def shearX(img, shearFactor=0.1):
     M = np.float32([[1, shearFactor, 0], [0, 1, 0]])
     dimensions = (img.shape[1], img.shape[0])
     return cv.warpAffine(img, M, dimensions)
@@ -71,14 +71,15 @@ def extract_uno(img):
 
     blank = np.zeros(shape=img.shape, dtype='uint8')
     blank[:] = (255, 255, 255)
- 
-    #mask_cropped = mask[y:y+h, x:x+w]
-    #masked_img = img[y:y+h, x:x+w]
-    cv.copyTo(img, mask, blank)  
+    cv.imshow('sh', mask)
+    mask_cropped = mask[y:y+h, x:x+w]
+    masked_img = img[y:y+h, x:x+w]
+    cv.copyTo(masked_img, mask_cropped, mask_cropped)
+    cv.imshow('m', masked_img)  
     #cv.rectangle(blank, (135, 145), (blank.shape[1]//5,
     #blank.shape[0]//7), (0, 255, 0), thickness=3)
     #cv.normalize(mask.copy(), mask, 0, 255, cv.NORM_MINMAX)
-    return mask
+    return masked_img
 
 
 
@@ -89,17 +90,19 @@ for filename in os.listdir('OpenCV Course/Photos V2/'):
         filepath = os.path.join('OpenCV Course/Photos V2/', filename)
         img = cv.imread(filepath)
         img_resized = resize(img)
-        
+        img_resized = shearX(img_resized)
         blank = np.zeros(shape=img_resized.shape, dtype='uint8')
         blank[:] = (255, 255, 255)
+
         
         mask = extract_uno(img_resized)
+
         h, w = mask.shape[:2]
         x_offset = 50
         y_offset = 0
         
         blank[y_offset:y_offset+h, x_offset:x_offset+w] = mask
-        
+        #cv.copyTo(img_resized,mask,blank)
         
         cv.imshow("UNO", blank)
         cv.waitKey(0)
