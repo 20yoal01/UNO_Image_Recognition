@@ -40,7 +40,19 @@ def shearY(img, shearFactor=0.1):
     dimensions = (img.shape[1], img.shape[0])
     return cv.warpAffine(img, M, dimensions)
     
-#def changeHSV():
+def changeHSV(img, saturation, value):
+    changeImg = img.copy()
+    changeImg = cv.cvtColor(changeImg, cv.COLOR_BGR2HSV).astype("float32")
+    h,s,v = cv.split(changeImg)
+    lim = 255 - value 
+    v[v > lim] = 255 
+    v[v <= lim] += value
+    lim = 255 - saturation 
+    s[s > lim] = 255 
+    s[s <= lim] += saturation
+    changeImg = cv.merge([h,s,v])
+    changeImg = cv.cvtColor(changeImg.astype("uint8"), cv.COLOR_HSV2BGR)
+    return changeImg
     
     
 
@@ -119,6 +131,7 @@ for filename in os.listdir('OpenCV Course/Photos V2/'):
         filepath = os.path.join('OpenCV Course/Photos V2/', filename)
         img = cv.imread(filepath)
         img_resized = resize(img)
+        
         img_resized = shearY(img_resized)
         img_resized = rotate(img_resized, 90)
         #blank = np.zeros(shape=img_resized.shape, dtype='uint8')
@@ -129,7 +142,7 @@ for filename in os.listdir('OpenCV Course/Photos V2/'):
         down_points = (down_width, down_height)
         #blank = cv.resize(blank, down_points, interpolation=cv.INTER_AREA)
         mask = extract_uno(img_resized)
-
+        img_resized = changeHSV(img_resized,60,30)
         pic = add_obj(blank, img_resized, mask, 200, 300)
         #h, w = mask.shape[:2]
         #x_offset = 50
@@ -137,7 +150,6 @@ for filename in os.listdir('OpenCV Course/Photos V2/'):
         
         #blank[y_offset:y_offset+h, x_offset:x_offset+w] = mask
         #cv.copyTo(img_resized,mask,blank)
-        
         cv.imshow("UNO", pic)
         cv.waitKey(0)
         cv.destroyAllWindows() 
