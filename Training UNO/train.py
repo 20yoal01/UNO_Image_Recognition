@@ -2,6 +2,7 @@ import cv2 as cv
 import numpy as np
 import os
 import random
+import math
 
 UNO_CARDS_PATH = 'OpenCV Course/Photos V2/'
 OUTPUT = 'UNO Syn/'
@@ -9,17 +10,24 @@ BACKGROUND_PATH = 'OpenCV Course/background'
 CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 
 
-IMAGES_PER_CARD = 100
+IMAGES_PER_CARD = 10
 TOTAL_CARDS_TO_GENERATE = 1
 
 
 TARGET_HEIGHT, TARGET_WIDTH = (720, 1280)
 ROTATE_RANGE = [-180, 180]
-TRANSLATE_RANGE = [(TARGET_WIDTH//2)*0.06, (TARGET_HEIGHT//2)*0.06] # 10% of screen
+TRANSLATE_RANGE = [(TARGET_WIDTH//2)*0.06, (TARGET_HEIGHT//2)*0.06] 
 SHEAR_RANGE = (-0.35, 0.35)
 PROJECTION_RANGE = (-0.35, 0.35)
-SATURATION_RANGE = 0
-VALUE_RANGE = 0
+SATURATION_RANGE = (0, 100)
+VALUE_RANGE = (-30, 255)
+
+DATASPLIT = {
+    'Train': 0.7,
+    'Validation': 0.15,
+    'Test': 0.15
+}
+
 
 def resize(img, scale_percent=.05):
     width = int(img.shape[1] * scale_percent)
@@ -170,6 +178,24 @@ index = 0
 folder_index = 0
 CURRENT_UNO_PATH = UNO_CARDS_PATH + CARD_TYPE[index]
 total_cards = 0
+
+train = DATASPLIT['Train']
+validation = DATASPLIT['Validation']
+test = DATASPLIT['Test']
+
+IMAGES_TO_TRAIN = math.ceil(IMAGES_PER_CARD * train)
+IMAGES_TO_VALIDATE = math.floor(IMAGES_PER_CARD * validation)
+IMAGES_TO_TEST = math.floor(IMAGES_PER_CARD  * test)
+
+print(IMAGES_TO_TRAIN, IMAGES_TO_VALIDATE, IMAGES_TO_TEST)
+
+for datasplit in DATASPLIT:
+    #DATASPLIT[datasplit]
+    output_path = os.path.join(OUTPUT, datasplit)
+    if not os.path.isdir(output_path):
+        print(output_path)
+        os.makedirs(output_path)
+
 while True:
     if total_cards >= TOTAL_CARDS_TO_GENERATE:
         break
@@ -195,7 +221,30 @@ while True:
     
     img_to_create = 0
     
+    DATASET = ['Train', 'Validation', 'Test']
+    dataset_index = -1
+    dataset_size = 0
+    dataset_current = 0
+    
     for background in os.listdir(BACKGROUND_PATH):
+        if dataset_current >= dataset_size:
+            dataset_current = 0
+            dataset_index += 1
+            
+            if dataset_index > len(DATASET) - 1:
+                break
+            
+            match DATASET[dataset_index]:
+                case 'Train':
+                    dataset_size = IMAGES_TO_TRAIN
+                case 'Validation':
+                    dataset_size = IMAGES_TO_VALIDATE
+                case 'Test':
+                    dataset_size = IMAGES_TO_TEST
+                    
+        dataset_current += 1
+        current_output = os.path.join(OUTPUT, DATASET[dataset_index] + '/')
+        
         if img_to_create >= IMAGES_PER_CARD:
             break
         
@@ -212,15 +261,18 @@ while True:
             shear_y      = round(random.uniform(SHEAR_RANGE[0], SHEAR_RANGE[1]), 2)
             projection_x = round(random.uniform(PROJECTION_RANGE[0], PROJECTION_RANGE[1]), 2)
             projection_y = round(random.uniform(PROJECTION_RANGE[0], PROJECTION_RANGE[1]), 2)
-            saturation   = round(random.uniform(SATURATION_RANGE, SATURATION_RANGE), 2)
-            value        = round(random.uniform(VALUE_RANGE, VALUE_RANGE), 2)
+            saturation   = round(random.uniform(SATURATION_RANGE[0], SATURATION_RANGE[1]), 2)
+            value        = round(random.uniform(VALUE_RANGE[0], VALUE_RANGE[1]), 2)
 
-            print(rotation, translate_x, translate_y, shear_x, shear_y, projection_x, projection_y, saturation, value)
+            print("Rotation: " + str(rotation), "Translate_X: " + str(translate_x), "Translate_Y: " + str(translate_y), "Shear_X: " + str(shear_x), 
+                  "Shear_Y " + str(shear_y),  "Projection_X " + str(projection_x), "Projection_Y : " + str(projection_y), "Saturation: " + str(saturation), 
+                  "Value: " + str(value))
 
             filepath = os.path.join(CURRENT_UNO_PATH, filename)
             img = cv.imread(filepath)
             img_resized = resize(img, scale_percent=0.025)
 
+            
             blank = np.zeros(shape=(TARGET_HEIGHT, TARGET_WIDTH, 3), dtype='uint8')
             blank[:] = (0, 0, 0)
             
@@ -230,17 +282,20 @@ while True:
             background_img = resize_no_aspect(background_img, TARGET_WIDTH, TARGET_HEIGHT)
             mask = extract_uno(img_resized)
             #cv.imshow('m', mask)
+            img_resized = changeHSV(img_resized, saturation, value)
             pic = add_obj(blank, img_resized, mask, TARGET_WIDTH//2, TARGET_HEIGHT//2)
             pic = projectiveTransform(pic, rotation, (translate_x, translate_y), (shear_x, shear_y), (projection_x, projection_y))
-
+            
             pic_gray = cv.cvtColor(pic, cv.COLOR_BGR2GRAY)
             ret, pic_mask = cv.threshold(pic_gray, 10, 255, cv.THRESH_BINARY)
             background_mask = cv.bitwise_not(pic_mask)
             card_masked = cv.bitwise_and(pic, pic, mask=pic_mask)
             background_masked = cv.bitwise_and(background_img, background_img, mask=background_mask)
             pic = cv.add(card_masked, background_masked)
-
-            cv.imwrite('test/' + background + '_' + cardType, pic)
+            
+            print(current_output)
+            
+            cv.imwrite(current_output + background + '_' + cardType, pic)
             #cv.imshow("UNO", pic)
             cv.waitKey(0)
             cv.destroyAllWindows()
