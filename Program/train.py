@@ -134,19 +134,12 @@ for filename in os.listdir('OpenCV Course/Photos V2/'):
         
         img_resized = shearY(img_resized)
         img_resized = rotate(img_resized, 90)
-        #blank = np.zeros(shape=img_resized.shape, dtype='uint8')
-        #blank[:] = (255, 255, 255)
-        blank = cv.imread(r'C:\Users\ejestxa\Documents\img\UNO_Image_Recognition\Training UNO\namn.jpg')
-        down_width = 346
-        down_height = 462
-        down_points = (down_width, down_height)
-        #blank = cv.resize(blank, down_points, interpolation=cv.INTER_AREA)
+        blank = np.zeros(shape=img_resized.shape, dtype='uint8')
+        blank[:] = (255, 255, 255)
+        #blank = cv.imread(r'C:\Users\ejestxa\Documents\img\UNO_Image_Recognition\Training UNO\namn.jpg')
         mask = extract_uno(img_resized)
         img_resized = changeHSV(img_resized,60,30)
         pic = add_obj(blank, img_resized, mask, 200, 300)
-        #h, w = mask.shape[:2]
-        #x_offset = 50
-        #y_offset = 0
         
         #blank[y_offset:y_offset+h, x_offset:x_offset+w] = mask
         #cv.copyTo(img_resized,mask,blank)
