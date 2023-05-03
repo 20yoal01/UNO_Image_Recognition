@@ -4,28 +4,58 @@ import os
 import random
 import math
 
+
 UNO_CARDS_PATH = 'OpenCV Course/Photos V2/'
 OUTPUT = 'UNO Syn/'
 BACKGROUND_PATH = 'OpenCV Course/background'
 CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 
 
-IMAGES_PER_CARD = 10
-TOTAL_CARDS_TO_GENERATE = 1
+IMAGES_PER_CARD = 5
+TOTAL_CARDS_TO_GENERATE = 5
+
+# DEFAULT
+#(720, 1280)
+#[-180, 180]
+#[(TARGET_WIDTH//2) * 0.06, (TARGET_HEIGHT//2) * 0.06] 
+#(-0.35, 0.35)
+#(-0.35, 0.35)
+#(0, 100)
+#(-30, 255)
 
 
-TARGET_HEIGHT, TARGET_WIDTH = (720, 1280)
-ROTATE_RANGE = [-180, 180]
-TRANSLATE_RANGE = [(TARGET_WIDTH//2)*0.06, (TARGET_HEIGHT//2)*0.06] 
-SHEAR_RANGE = (-0.35, 0.35)
-PROJECTION_RANGE = (-0.35, 0.35)
-SATURATION_RANGE = (0, 100)
-VALUE_RANGE = (-30, 255)
+TARGET_HEIGHT, TARGET_WIDTH =   (720, 1280)
+ROTATE_RANGE =                  [-180, 180]
+TRANSLATE_RANGE =               [(TARGET_WIDTH//2) * 0.15, (TARGET_HEIGHT//2) * 0.15] 
+PROJECTION_RANGE =              (-0.75, 0.75)
+SATURATION_RANGE =              (0, 100)
+VALUE_RANGE =                   (-30, 255)
+
+class_name_to_id_mapping = {
+    "zero": 0,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "d2": 10,
+    "r": 11,
+    "s": 12,
+    "d4": 13,
+    "wild_card": 14,
+    "wild_custom": 15,
+    "wild_shuffle": 16
+}
+
 
 DATASPLIT = {
-    'Train': 0.7,
-    'Validation': 0.15,
-    'Test': 0.15
+    'Train': 1.0,
+    'Validation': 0,
+    'Test': 0
 }
 
 
@@ -54,18 +84,8 @@ def resize_no_aspect(img, width, height):
 #     transMat = np.float32([[1, 0, x], [0, 1, y]])
 #     dimensions = (img.shape[1], img.shape[0])
 #     return cv.warpAffine(img, transMat, dimensions)
-    
 
-def shearX(img, shearFactor=0.1):
-    M = np.float32([[1, shearFactor, 0], [0, 1, 0]])
-    dimensions = (img.shape[1], img.shape[0])
-    return cv.warpAffine(img, M, dimensions)
-def shearY(img, shearFactor=0.1):
-    M = np.float32([[1, 0, 0], [shearFactor, 1, 0]])
-    dimensions = (img.shape[1], img.shape[0])
-    return cv.warpAffine(img, M, dimensions)
-
-def projectiveTransform(img, angle, translation=(0, 0), shear=(0,0), projective=(0,0), rotPoint=None):
+def projectiveTransform(img, angle, translation=(0, 0), projective=(0,0), rotPoint=None):
     (height, width) = img.shape[:2]
     dimensions = (width, height)
     if rotPoint is None:
@@ -74,9 +94,6 @@ def projectiveTransform(img, angle, translation=(0, 0), shear=(0,0), projective=
     # Roterar bilden
     rotMat = cv.getRotationMatrix2D(rotPoint, angle, 1.0)
     rotMat = np.vstack([rotMat, [0, 0, 1]])
-
-    # Shear
-    shearMat = np.float32([[1, shear[0], 0], [shear[1], 1, 0], [0, 0, 1]])
 
     # Translation
     transMat = np.float32([[1, 0, translation[0]], [0, 1, translation[1]], [0, 0, 1]])
@@ -87,7 +104,7 @@ def projectiveTransform(img, angle, translation=(0, 0), shear=(0,0), projective=
     perspMat = cv.getPerspectiveTransform(src_pts, dst_pts)
 
     # Kombinerar allting
-    projMat = np.dot(transMat,  np.dot(shearMat, np.dot(perspMat, rotMat)))
+    projMat = np.dot(transMat,  np.dot(perspMat, rotMat))
     
     return cv.warpPerspective(img, projMat, dimensions)
 
@@ -141,7 +158,10 @@ def extract_uno(img):
     #cv.rectangle(blank, (135, 145), (blank.shape[1]//5,
     #blank.shape[0]//7), (0, 255, 0), thickness=3)
     #cv.normalize(mask.copy(), mask, 0, 255, cv.NORM_MINMAX)
-    return mask
+    
+    #cv.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+    #cv.imshow('test', img)
+    return mask, (x,y,w,h)
 
 def add_obj(background, img, mask, x, y):
     '''
@@ -173,7 +193,6 @@ def add_obj(background, img, mask, x, y):
     
     return bg
 
-
 index = 0
 folder_index = 0
 CURRENT_UNO_PATH = UNO_CARDS_PATH + CARD_TYPE[index]
@@ -187,7 +206,10 @@ IMAGES_TO_TRAIN = math.ceil(IMAGES_PER_CARD * train)
 IMAGES_TO_VALIDATE = math.floor(IMAGES_PER_CARD * validation)
 IMAGES_TO_TEST = math.floor(IMAGES_PER_CARD  * test)
 
-print(IMAGES_TO_TRAIN, IMAGES_TO_VALIDATE, IMAGES_TO_TEST)
+LABEL_PATH = os.path.join(OUTPUT, 'labels/')
+
+if not os.path.isdir(LABEL_PATH):
+    os.makedirs(LABEL_PATH)
 
 for datasplit in DATASPLIT:
     #DATASPLIT[datasplit]
@@ -195,6 +217,43 @@ for datasplit in DATASPLIT:
     if not os.path.isdir(output_path):
         print(output_path)
         os.makedirs(output_path)
+
+def convert_to_yolov5(info_card, cardname, output_name):
+    print_buffer = []
+    
+    try:
+        class_id = class_name_to_id_mapping[cardname]
+    except KeyError:
+        print("Invalid Class. Must be one from ", class_name_to_id_mapping.keys())
+    
+    x,y,w,h = info_card
+    
+    # Transform the bbox co-ordinates as per the format required by YOLO v5
+    x_max = x + w
+    y_max = y + h
+    
+    b_center_x = (x + x_max) / 2 
+    b_center_y = (y + y_max) / 2
+    b_width    = w
+    b_height   = h
+    
+    # Normalise the co-ordinates by the dimensions of the image
+    b_center_x /= TARGET_WIDTH 
+    b_center_y /= TARGET_HEIGHT
+    b_width    /= TARGET_WIDTH 
+    b_height   /= TARGET_HEIGHT
+    
+    #Write the bbox details to the file 
+    print_buffer.append("{} {:.3f} {:.3f} {:.3f} {:.3f}".format(class_id, b_center_x, b_center_y, b_width, b_height))
+        
+    # Name of the file which we have to save 
+    save_file_name = os.path.join(LABEL_PATH, output_name)
+    
+    # Save the annotation to disk
+    print("\n".join(print_buffer), file= open(save_file_name, "w"))
+
+blank = np.zeros(shape=(TARGET_HEIGHT, TARGET_WIDTH, 3), dtype='uint8')
+blank[:] = (0, 0, 0)
 
 while True:
     if total_cards >= TOTAL_CARDS_TO_GENERATE:
@@ -225,6 +284,13 @@ while True:
     dataset_index = -1
     dataset_size = 0
     dataset_current = 0
+    
+    filepath = os.path.join(CURRENT_UNO_PATH, filename)
+    img = cv.imread(filepath)
+    img_resized = resize(img, scale_percent=0.025)
+    
+    mask, card_info = extract_uno(img_resized)
+    
     
     for background in os.listdir(BACKGROUND_PATH):
         if dataset_current >= dataset_size:
@@ -257,45 +323,53 @@ while True:
             rotation     = round(random.uniform(ROTATE_RANGE[0], ROTATE_RANGE[1]), 2)
             translate_x  = round(random.uniform(-TRANSLATE_RANGE[0], TRANSLATE_RANGE[0]), 2)
             translate_y  = round(random.uniform(-TRANSLATE_RANGE[1], TRANSLATE_RANGE[1]), 2)
-            shear_x      = round(random.uniform(SHEAR_RANGE[0], SHEAR_RANGE[1]), 2)
-            shear_y      = round(random.uniform(SHEAR_RANGE[0], SHEAR_RANGE[1]), 2)
             projection_x = round(random.uniform(PROJECTION_RANGE[0], PROJECTION_RANGE[1]), 2)
             projection_y = round(random.uniform(PROJECTION_RANGE[0], PROJECTION_RANGE[1]), 2)
             saturation   = round(random.uniform(SATURATION_RANGE[0], SATURATION_RANGE[1]), 2)
             value        = round(random.uniform(VALUE_RANGE[0], VALUE_RANGE[1]), 2)
 
-            print("Rotation: " + str(rotation), "Translate_X: " + str(translate_x), "Translate_Y: " + str(translate_y), "Shear_X: " + str(shear_x), 
-                  "Shear_Y " + str(shear_y),  "Projection_X " + str(projection_x), "Projection_Y : " + str(projection_y), "Saturation: " + str(saturation), 
-                  "Value: " + str(value))
-
-            filepath = os.path.join(CURRENT_UNO_PATH, filename)
-            img = cv.imread(filepath)
-            img_resized = resize(img, scale_percent=0.025)
-
-            
-            blank = np.zeros(shape=(TARGET_HEIGHT, TARGET_WIDTH, 3), dtype='uint8')
-            blank[:] = (0, 0, 0)
+            #print("Rotation: " + str(rotation), "Translate_X: " + str(translate_x), "Translate_Y: " + str(translate_y), 
+            #      "Projection_X " + str(projection_x), "Projection_Y : " + str(projection_y), 
+            #      "Saturation: " + str(saturation), "Value: " + str(value))
             
             background_img = cv.imread(background_img_path)
             b_dimensions = background_img.shape[:2]
 
             background_img = resize_no_aspect(background_img, TARGET_WIDTH, TARGET_HEIGHT)
-            mask = extract_uno(img_resized)
+            
             #cv.imshow('m', mask)
             img_resized = changeHSV(img_resized, saturation, value)
             pic = add_obj(blank, img_resized, mask, TARGET_WIDTH//2, TARGET_HEIGHT//2)
-            pic = projectiveTransform(pic, rotation, (translate_x, translate_y), (shear_x, shear_y), (projection_x, projection_y))
+            pic = projectiveTransform(pic, rotation, (translate_x, translate_y), (projection_x, projection_y))
             
-            pic_gray = cv.cvtColor(pic, cv.COLOR_BGR2GRAY)
-            ret, pic_mask = cv.threshold(pic_gray, 10, 255, cv.THRESH_BINARY)
-            background_mask = cv.bitwise_not(pic_mask)
-            card_masked = cv.bitwise_and(pic, pic, mask=pic_mask)
-            background_masked = cv.bitwise_and(background_img, background_img, mask=background_mask)
-            pic = cv.add(card_masked, background_masked)
-            
-            print(current_output)
-            
-            cv.imwrite(current_output + background + '_' + cardType, pic)
-            #cv.imshow("UNO", pic)
-            cv.waitKey(0)
+            try:
+                no_mask, card_info = extract_uno(pic)
+                x,y,w,h = card_info
+                #print(card_info)
+
+                pic_gray = cv.cvtColor(pic, cv.COLOR_BGR2GRAY)
+                ret, pic_mask = cv.threshold(pic_gray, 10, 255, cv.THRESH_BINARY)
+                background_mask = cv.bitwise_not(pic_mask)
+                card_masked = cv.bitwise_and(pic, pic, mask=pic_mask)
+                background_masked = cv.bitwise_and(background_img, background_img, mask=background_mask)
+                pic = cv.add(card_masked, background_masked)
+
+                cv.rectangle(pic,(x,y),(x+w,y+h),(0,255,0),2)
+
+                print(current_output)
+
+                FILENAME = os.path.splitext(background)[0].lower() + '_' + cardType
+                CARD_SYMBOL = os.path.splitext(filename)[0].lower()
+                FILENAME_YOLOV5 = os.path.splitext(background)[0].lower() + '_' + CARD_TYPE[index] + ' ' + CARD_SYMBOL + '.txt'
+
+                cv.imwrite(current_output + FILENAME, pic)
+                convert_to_yolov5(card_info, CARD_SYMBOL, FILENAME_YOLOV5)
+                #cv.imshow("UNO", pic)
+                cv.waitKey(0)
+            except:
+                save_file_name = os.path.join(OUTPUT, 'file_error')
+                FILENAME = os.path.splitext(background)[0].lower() + '_' + cardType
+                print(FILENAME, file= open(save_file_name + ".txt", "a"))
+                print("An exception occurred")
+                
             cv.destroyAllWindows()
