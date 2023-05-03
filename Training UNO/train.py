@@ -6,12 +6,13 @@ import math
 
 
 UNO_CARDS_PATH = 'OpenCV Course/Photos V2/'
-OUTPUT = 'UNO Syn/'
+OUTPUT = 'UNO Syn/images'
+LABEL_PATH = 'UNO Syn/labels'
 BACKGROUND_PATH = 'OpenCV Course/background'
 CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 
 
-IMAGES_PER_CARD = 5
+IMAGES_PER_CARD = 100
 TOTAL_CARDS_TO_GENERATE = 5
 
 # DEFAULT
@@ -53,9 +54,9 @@ class_name_to_id_mapping = {
 
 
 DATASPLIT = {
-    'Train': 1.0,
-    'Validation': 0,
-    'Test': 0
+    'Train': 0.7,
+    'Validation': 0.15,
+    'Test': 0.15
 }
 
 
@@ -206,19 +207,20 @@ IMAGES_TO_TRAIN = math.ceil(IMAGES_PER_CARD * train)
 IMAGES_TO_VALIDATE = math.floor(IMAGES_PER_CARD * validation)
 IMAGES_TO_TEST = math.floor(IMAGES_PER_CARD  * test)
 
-LABEL_PATH = os.path.join(OUTPUT, 'labels/')
-
 if not os.path.isdir(LABEL_PATH):
     os.makedirs(LABEL_PATH)
 
 for datasplit in DATASPLIT:
     #DATASPLIT[datasplit]
     output_path = os.path.join(OUTPUT, datasplit)
+    label_path = os.path.join(LABEL_PATH, datasplit)
+    if not os.path.isdir(label_path):
+        os.makedirs(label_path)
     if not os.path.isdir(output_path):
         print(output_path)
         os.makedirs(output_path)
 
-def convert_to_yolov5(info_card, cardname, output_name):
+def convert_to_yolov5(info_card, cardname, output_name, current_label_path):
     print_buffer = []
     
     try:
@@ -247,7 +249,7 @@ def convert_to_yolov5(info_card, cardname, output_name):
     print_buffer.append("{} {:.3f} {:.3f} {:.3f} {:.3f}".format(class_id, b_center_x, b_center_y, b_width, b_height))
         
     # Name of the file which we have to save 
-    save_file_name = os.path.join(LABEL_PATH, output_name)
+    save_file_name = os.path.join(current_label_path, output_name)
     
     # Save the annotation to disk
     print("\n".join(print_buffer), file= open(save_file_name, "w"))
@@ -310,6 +312,7 @@ while True:
                     
         dataset_current += 1
         current_output = os.path.join(OUTPUT, DATASET[dataset_index] + '/')
+        current_label_path = os.path.join(LABEL_PATH, DATASET[dataset_index] + '/')
         
         if img_to_create >= IMAGES_PER_CARD:
             break
@@ -363,7 +366,7 @@ while True:
                 FILENAME_YOLOV5 = os.path.splitext(background)[0].lower() + '_' + CARD_TYPE[index] + ' ' + CARD_SYMBOL + '.txt'
 
                 cv.imwrite(current_output + FILENAME, pic)
-                convert_to_yolov5(card_info, CARD_SYMBOL, FILENAME_YOLOV5)
+                convert_to_yolov5(card_info, CARD_SYMBOL, FILENAME_YOLOV5, current_label_path)
                 #cv.imshow("UNO", pic)
                 cv.waitKey(0)
             except:
