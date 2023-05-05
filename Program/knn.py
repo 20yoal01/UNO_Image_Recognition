@@ -11,6 +11,12 @@ knn= cv.ml.KNearest_create()
 knn.train(arr, cv.ml.ROW_SAMPLE, res)
 ret, results, neighbours, dist = knn.findNearest(newcomer,23)
 
+#0: blue 
+#1: green
+#2: red
+#3: wild
+#4: yellow
+
 print( "result:  {}\n".format(results) )
 print( "neighbours:  {}\n".format(neighbours) )
 print( "distance:  {}\n".format(dist) )
