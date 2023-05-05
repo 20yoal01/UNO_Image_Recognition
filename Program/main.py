@@ -1,12 +1,18 @@
 import cv2 as cv 
 import numpy as np
+import os
 
 SCALE_PERCENT =.05
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
+UNO_CARDS_PATH = 'photos/'
+OUTPUT_GRAY = 'Templates/Gray'
+OUTPUT_COLOR = 'Templates/Color'
+CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 
-##################################################################################
+
+#Lägger in rätt punkter på rätt plats i rektangeln
 def order_points(pts):
     rect = np.zeros((4,2), dtype= "float32")
     s = pts.sum(axis=1)
@@ -17,15 +23,16 @@ def order_points(pts):
     rect[3] = pts[np.argmax(diff)]
     return rect
 
+#Utför en perspektiv transformation 
 def four_point_transform(image, pts):
     rect = order_points(pts)
-    (tl,tr,br,bl) = rect
-    widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
-    widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
-    maxWidth = max(int(widthA), int(widthB))
-    heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
-    heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
-    maxHeight = max(int(heightA), int(heightB))
+    (topL,topR,botR,botL) = rect
+    wBottom = np.sqrt(((botR[0] - botL[0]) ** 2) + ((botR[1] - botL[1]) ** 2))
+    wTop = np.sqrt(((topR[0] - topL[0]) ** 2) + ((topR[1] - topL[1]) ** 2))
+    maxWidth = max(int(wBottom), int(wTop))
+    hRight = np.sqrt(((topR[0] - botR[0]) ** 2) + ((topR[1] - botR[1]) ** 2))
+    hLeft = np.sqrt(((topL[0] - botL[0]) ** 2) + ((topL[1] - botL[1]) ** 2))
+    maxHeight = max(int(hRight), int(hLeft))
     dst = np.array([
         [0, 0],
         [maxWidth - 1, 0],
@@ -34,7 +41,8 @@ def four_point_transform(image, pts):
     M = cv.getPerspectiveTransform(rect, dst)
     warped = cv.warpPerspective(image, M, (maxWidth, maxHeight))
     return warped
-######################################################################################
+
+
 
 img = cv.imread(r"photos\20230414_142534.jpg")
 img = cv.resize(img, None, fx= SCALE_PERCENT, fy= SCALE_PERCENT, interpolation=cv.INTER_AREA)
@@ -49,15 +57,6 @@ cv.imshow('thresholded original',thresh)
 cv.waitKey(0)
 
 contours, hierarchies = cv.findContours(thresh, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-#mask = np.zeros(shape=img.shape, dtype='uint8')
-#blank = np.zeros(shape=img.shape, dtype='uint8')
-#blank[:] = (0, 0, 255)
-
-#cv.drawContours(mask, contours, -1, (255,255,255), thickness=cv.FILLED)
-
-#cv.copyTo(img, mask, blank)
-
-################### Försök 2 ##############################
 
 imx = img.shape[0]
 imy = img.shape[1]
@@ -108,52 +107,5 @@ for cnt in contours:
         warped = four_point_transform(tmp_img,pts)
         cv.imshow("Warped",warped)
         cv.waitKey(0)
-
-
-
-
-
-
-################### Försök 1 ##############################
-#pts = contours[0]
-#
-#epsilon = cv.arcLength(pts,True)
-#approx = cv.approxPolyDP(pts,0.01*epsilon,True)
-#print(approx)
-
-
-#x,y,w,h = cv.boundingRect(pts)
-#
-#temp_rect = np.zeros((4,2), dtype="float32")
-#s = np.sum(pts, axis=2)
-#tl = pts[np.argmin(s)]
-#br = pts[np.argmax(s)]
-#
-#diff = np.diff(pts, axis=-1)
-#tr = pts[np.argmin(diff)]
-#bl = pts[np.argmax(diff)]
-#
-#if w <= 0.8*h:
-#    temp_rect[0] = tl
-#    temp_rect[1] = tr
-#    temp_rect[2] = br
-#    temp_rect[3] = bl
-#
-#if w >= 1.2*h:
-#    temp_rect[0] = bl
-#    temp_rect[1] = tl
-#    temp_rect[2] = tr
-#    temp_rect[3] = br
-#
-#maxWidth = 200
-#maxHeight = 300
-#
-#dst = np.array([[0,0],[maxWidth-1,0],[maxWidth-1,maxHeight-1],[0,maxHeight-1]], np.float32)
-#M = cv.getPerspectiveTransform(temp_rect,dst)
-#warp = cv.warpPerspective(img,M,(maxWidth,maxHeight))
-#cv.imshow('warp', warp)
-#################################################################################################
-
-#cv.imshow('Image', blank)
 
 cv.waitKey(0)
