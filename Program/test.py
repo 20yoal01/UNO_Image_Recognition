@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 import os
 
-SCALE_PERCENT = 1
+SCALE_PERCENT = 0.1
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
@@ -44,7 +44,7 @@ def four_point_transform(image, pts):
 
 
 
-img = cv.imread(r"C:\Users\ejestxa\Documents\img\UNO_Image_Recognition\photos\BLUE\eight.jpg")
+img = cv.imread('20230406_151513.jpg')
 img = cv.resize(img, None, fx= SCALE_PERCENT, fy= SCALE_PERCENT, interpolation=cv.INTER_AREA)
 
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -52,9 +52,9 @@ gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 #canny = cv.Canny(blur, LOWER_THRESHOLD, UPPER_THRESHOLD, apertureSize=APERTURE_SIZE)
 
-ret,thresh= cv.threshold(gray,127,255,0)
-#cv.imshow('thresholded original',thresh)
-#cv.waitKey(0)
+ret,thresh= cv.threshold(gray,150,255,0)
+cv.imshow('thresholded original',thresh)
+cv.waitKey(0)
 
 contours, hierarchies = cv.findContours(thresh, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
 
@@ -62,48 +62,48 @@ imx = img.shape[0]
 imy = img.shape[1]
 lp_area = (imx * imy) / 10
 
-for cnt in contours:
-    approx = cv.approxPolyDP(cnt, 0.01 * cv.arcLength(cnt, True), True)
-
-    if len(approx) == 4 and cv.contourArea(cnt) > lp_area:
-        tmp_img = img.copy()
-        cv.drawContours(tmp_img, [cnt], 0, (0,255,255),6)
-        #cv.imshow('Contour Borders', tmp_img)
-        #cv.waitKey(0)
-
-        tmp_img = img.copy()
-        mask = np.zeros((img.shape[:2]),np.uint8)
-        hull = cv.convexHull(cnt)
-        cv.drawContours(mask, [hull],0,(255,255,255),-1)
-        #cv.imshow('hull',mask)
-        #cv.waitKey(0)
-
-        tmp_img = img.copy()
-        rect = cv.minAreaRect(cnt)
-        box = cv.boxPoints(rect)
-        box = np.int0(box)
-        print(box)
-        #cv.drawContours(tmp_img, [box],0,(0,0,255),2)
-        #cv.waitKey(0)
-
-        tmp_img = img.copy()
-        topLeft = box[0]
-        topRight = box[1]
-        botRight = box[2]
-        botLeft = box[3]
-        cv.drawContours(tmp_img, [cnt], -1, (0, 255, 255), 2)
-        cv.circle(tmp_img, topLeft, 8, (0, 0, 255), -1)
-        cv.circle(tmp_img, topRight, 8, (0, 255, 0), -1)
-        cv.circle(tmp_img, botRight, 8, (255, 0, 0), -1)
-        cv.circle(tmp_img, botLeft, 8, (255, 255, 0), -1)
-        #cv.imshow('img contour drawn', tmp_img)
-        #cv.waitKey(0)
-
-        tmp_img = img.copy()
-        pts = np.array([topLeft,topRight,botRight,botLeft])
-        warped = four_point_transform(tmp_img,pts)
-        #cv.imshow("Warped",warped)
-        #cv.waitKey(0)
-        cv.imwrite('test.jpg',warped)
+#for cnt in contours:
+#    approx = cv.approxPolyDP(cnt, 0.01 * cv.arcLength(cnt, True), True)
+#
+#    if len(approx) == 4 and cv.contourArea(cnt) > lp_area:
+#        tmp_img = img.copy()
+#        cv.drawContours(tmp_img, [cnt], 0, (0,255,255),6)
+#        #cv.imshow('Contour Borders', tmp_img)
+#        #cv.waitKey(0)
+#
+#        tmp_img = img.copy()
+#        mask = np.zeros((img.shape[:2]),np.uint8)
+#        hull = cv.convexHull(cnt)
+#        cv.drawContours(mask, [hull],0,(255,255,255),-1)
+#        #cv.imshow('hull',mask)
+#        #cv.waitKey(0)
+#
+#        tmp_img = img.copy()
+#        rect = cv.minAreaRect(cnt)
+#        box = cv.boxPoints(rect)
+#        box = np.int0(box)
+#        print(box)
+#        #cv.drawContours(tmp_img, [box],0,(0,0,255),2)
+#        #cv.waitKey(0)
+#
+#        tmp_img = img.copy()
+#        topLeft = box[0]
+#        topRight = box[1]
+#        botRight = box[2]
+#        botLeft = box[3]
+#        cv.drawContours(tmp_img, [cnt], -1, (0, 255, 255), 2)
+#        cv.circle(tmp_img, topLeft, 8, (0, 0, 255), -1)
+#        cv.circle(tmp_img, topRight, 8, (0, 255, 0), -1)
+#        cv.circle(tmp_img, botRight, 8, (255, 0, 0), -1)
+#        cv.circle(tmp_img, botLeft, 8, (255, 255, 0), -1)
+#        #cv.imshow('img contour drawn', tmp_img)
+#        #cv.waitKey(0)
+#
+#        tmp_img = img.copy()
+#        pts = np.array([topLeft,topRight,botRight,botLeft])
+#        warped = four_point_transform(tmp_img,pts)
+#        #cv.imshow("Warped",warped)
+#        #cv.waitKey(0)
+#        cv.imwrite('test.jpg',warped)
 
 #cv.waitKey(0)
