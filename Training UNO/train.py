@@ -15,8 +15,8 @@ CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 # TOTAL_CARDS_TO_GENERATE = 56
 
 
-IMAGES_PER_CARD = 200
-TOTAL_CARDS_TO_GENERATE = 56
+IMAGES_PER_CARD = 1
+TOTAL_CARDS_TO_GENERATE = 5
 
 # DEFAULT
 # (720, 1280)
@@ -35,27 +35,12 @@ PROJECTION_RANGE = (-0.60, 0.60)
 SATURATION_RANGE = (0, 100)
 VALUE_RANGE = (-30, 255)
 
-class_name_to_id_mapping_symbol = {
-    "zero": 0,
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "d2": 10,
-    "r": 11,
-    "s": 12,
-    "d4": 13,
-    "wild_card": 14,
-    "wild_custom": 15,
-    "wild_shuffle": 16
-}
+USE_COLORED_CARDS = False
 
-class_name_to_id_mapping_card_set = {
+class_name_to_id_mapping = None
+
+if USE_COLORED_CARDS:
+    class_name_to_id_mapping = {
     "BLUE zero": 0,
     "BLUE one": 1,
     "BLUE two": 2,
@@ -112,13 +97,34 @@ class_name_to_id_mapping_card_set = {
     "wild_card": 53,
     "wild_custom": 54,
     "wild_shuffle": 55
-}
+    }
+else:
+    class_name_to_id_mapping = {
+    "zero": 0,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "d2": 10,
+    "r": 11,
+    "s": 12,
+    "d4": 13,
+    "wild_card": 14,
+    "wild_custom": 15,
+    "wild_shuffle": 16
+    }
+
 
 
 DATASPLIT = {
-    'Train': 0.7,
-    'Validation': 0.15,
-    'Test': 0.15
+    'Train': 1.0,
+    'Validation': 0,
+    'Test': 0
 }
 
 
@@ -411,10 +417,10 @@ while True:
                 SATURATION_RANGE[0], SATURATION_RANGE[1]), 2)
             value = round(random.uniform(VALUE_RANGE[0], VALUE_RANGE[1]), 2)
 
-            print("Rotation: " + str(rotation), "Translate_X: " + str(translate_x), "Translate_Y: " + str(translate_y),
-                  "Projection_X " +
-                  str(projection_x), "Projection_Y : " + str(projection_y),
-                  "Saturation: " + str(saturation), "Value: " + str(value))
+            #print("Rotation: " + str(rotation), "Translate_X: " + str(translate_x), "Translate_Y: " + str(translate_y),
+            #      "Projection_X " +
+            #      str(projection_x), "Projection_Y : " + str(projection_y),
+            #      "Saturation: " + str(saturation), "Value: " + str(value))
 
             background_img = cv.imread(background_img_path)
             b_dimensions = background_img.shape[:2]
@@ -456,9 +462,17 @@ while True:
                 CARD_SYMBOL = os.path.splitext(filename)[0].lower()
                 FILENAME_YOLOV5 = os.path.splitext(background)[0].lower(
                 ) + '_' + CARD_TYPE[index] + ' ' + CARD_SYMBOL + '.txt'
-
+                
+                CLASS_INPUT = None
+                
+                if USE_COLORED_CARDS:
+                    CLASS_INPUT = CARD_TYPE[index] + ' ' + CARD_SYMBOL    
+                else:
+                    CLASS_INPUT = CARD_SYMBOL
+                    pic = cv.cvtColor(pic, cv.COLOR_BGR2GRAY)
+                
                 cv.imwrite(current_output + FILENAME, pic)
-                convert_to_yolov5(card_info, CARD_SYMBOL,
+                convert_to_yolov5(card_info, CLASS_INPUT,
                                   FILENAME_YOLOV5, current_label_path)
                 # cv.imshow("UNO", pic)
                 cv.waitKey(0)
