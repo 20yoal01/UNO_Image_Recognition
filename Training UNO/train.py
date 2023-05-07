@@ -5,10 +5,10 @@ import random
 import math
 
 
-UNO_CARDS_PATH = 'OpenCV Course/Photos V2/'
+UNO_CARDS_PATH = 'Photos V2/'
 OUTPUT = 'UNO Syn/images'
 LABEL_PATH = 'UNO Syn/labels'
-BACKGROUND_PATH = 'OpenCV Course/background'
+BACKGROUND_PATH = 'background'
 CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 
 # IMAGES_PER_CARD = 200
@@ -41,84 +41,83 @@ class_name_to_id_mapping = None
 
 if USE_COLORED_CARDS:
     class_name_to_id_mapping = {
-    "BLUE zero": 0,
-    "BLUE one": 1,
-    "BLUE two": 2,
-    "BLUE three": 3,
-    "BLUE four": 4,
-    "BLUE five": 5,
-    "BLUE six": 6,
-    "BLUE seven": 7,
-    "BLUE eight": 8,
-    "BLUE nine": 9,
-    "BLUE d2": 10,
-    "BLUE r": 11,
-    "BLUE s": 12,
-    "RED zero": 13,
-    "RED one": 14,
-    "RED two": 15,
-    "RED three": 16,
-    "RED four": 17,
-    "RED five": 18,
-    "RED six": 19,
-    "RED seven": 20,
-    "RED eight": 21,
-    "RED nine": 22,
-    "RED d2": 23,
-    "RED r": 24,
-    "RED s": 25,
-    "YELLOW zero": 26,
-    "YELLOW one": 27,
-    "YELLOW two": 28,
-    "YELLOW three": 29,
-    "YELLOW four": 30,
-    "YELLOW five": 31,
-    "YELLOW six": 32,
-    "YELLOW seven": 33,
-    "YELLOW eight": 34,
-    "YELLOW nine": 35,
-    "YELLOW d2": 36,
-    "YELLOW r": 37,
-    "YELLOW s": 38,
-    "GREEN zero": 39,
-    "GREEN one": 40,
-    "GREEN two": 41,
-    "GREEN three": 42,
-    "GREEN four": 43,
-    "GREEN five": 44,
-    "GREEN six": 45,
-    "GREEN seven": 46,
-    "GREEN eight": 47,
-    "GREEN nine": 48,
-    "GREEN d2": 49,
-    "GREEN r": 50,
-    "GREEN s": 51,
-    "d4": 52,
-    "wild_card": 53,
-    "wild_custom": 54,
-    "wild_shuffle": 55
+        "BLUE zero": 0,
+        "BLUE one": 1,
+        "BLUE two": 2,
+        "BLUE three": 3,
+        "BLUE four": 4,
+        "BLUE five": 5,
+        "BLUE six": 6,
+        "BLUE seven": 7,
+        "BLUE eight": 8,
+        "BLUE nine": 9,
+        "BLUE d2": 10,
+        "BLUE r": 11,
+        "BLUE s": 12,
+        "RED zero": 13,
+        "RED one": 14,
+        "RED two": 15,
+        "RED three": 16,
+        "RED four": 17,
+        "RED five": 18,
+        "RED six": 19,
+        "RED seven": 20,
+        "RED eight": 21,
+        "RED nine": 22,
+        "RED d2": 23,
+        "RED r": 24,
+        "RED s": 25,
+        "YELLOW zero": 26,
+        "YELLOW one": 27,
+        "YELLOW two": 28,
+        "YELLOW three": 29,
+        "YELLOW four": 30,
+        "YELLOW five": 31,
+        "YELLOW six": 32,
+        "YELLOW seven": 33,
+        "YELLOW eight": 34,
+        "YELLOW nine": 35,
+        "YELLOW d2": 36,
+        "YELLOW r": 37,
+        "YELLOW s": 38,
+        "GREEN zero": 39,
+        "GREEN one": 40,
+        "GREEN two": 41,
+        "GREEN three": 42,
+        "GREEN four": 43,
+        "GREEN five": 44,
+        "GREEN six": 45,
+        "GREEN seven": 46,
+        "GREEN eight": 47,
+        "GREEN nine": 48,
+        "GREEN d2": 49,
+        "GREEN r": 50,
+        "GREEN s": 51,
+        "WILD d4": 52,
+        "WILD wild_card": 53,
+        "WILD wild_custom": 54,
+        "WILD wild_shuffle": 55
     }
 else:
     class_name_to_id_mapping = {
-    "zero": 0,
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "d2": 10,
-    "r": 11,
-    "s": 12,
-    "d4": 13,
-    "wild_card": 14,
-    "wild_custom": 15,
-    "wild_shuffle": 16
+        "zero": 0,
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+        "d2": 10,
+        "r": 11,
+        "s": 12,
+        "d4": 13,
+        "wild_card": 14,
+        "wild_custom": 15,
+        "wild_shuffle": 16
     }
-
 
 
 DATASPLIT = {
@@ -417,7 +416,7 @@ while True:
                 SATURATION_RANGE[0], SATURATION_RANGE[1]), 2)
             value = round(random.uniform(VALUE_RANGE[0], VALUE_RANGE[1]), 2)
 
-            #print("Rotation: " + str(rotation), "Translate_X: " + str(translate_x), "Translate_Y: " + str(translate_y),
+            # print("Rotation: " + str(rotation), "Translate_X: " + str(translate_x), "Translate_Y: " + str(translate_y),
             #      "Projection_X " +
             #      str(projection_x), "Projection_Y : " + str(projection_y),
             #      "Saturation: " + str(saturation), "Value: " + str(value))
@@ -462,15 +461,15 @@ while True:
                 CARD_SYMBOL = os.path.splitext(filename)[0].lower()
                 FILENAME_YOLOV5 = os.path.splitext(background)[0].lower(
                 ) + '_' + CARD_TYPE[index] + ' ' + CARD_SYMBOL + '.txt'
-                
+
                 CLASS_INPUT = None
-                
+
                 if USE_COLORED_CARDS:
-                    CLASS_INPUT = CARD_TYPE[index] + ' ' + CARD_SYMBOL    
+                    CLASS_INPUT = CARD_TYPE[index] + ' ' + CARD_SYMBOL
                 else:
                     CLASS_INPUT = CARD_SYMBOL
                     pic = cv.cvtColor(pic, cv.COLOR_BGR2GRAY)
-                
+
                 cv.imwrite(current_output + FILENAME, pic)
                 convert_to_yolov5(card_info, CLASS_INPUT,
                                   FILENAME_YOLOV5, current_label_path)
