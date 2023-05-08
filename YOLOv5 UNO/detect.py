@@ -8,12 +8,13 @@ class ObjectDetection:
     def __init__(self):
         self.model = self.load_model()
         self.classes = self.model.names
-        self.device = 'cuda' if torch.cuda.is_available else 'cpu'
+        # self.device = 'cuda' if torch.cuda.is_available else 'cpu'
+        self.device = 'cpu'
         print('\n\nDevice Used: ', self.device)
         
     
     def load_model(self):
-        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det_low\weights\best.pt')
+        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det\weights\best.pt')
         return model
     
     def score_frame(self, frame):
