@@ -9,12 +9,12 @@ class ObjectDetection:
         self.model = self.load_model()
         self.classes = self.model.names
         # self.device = 'cuda' if torch.cuda.is_available else 'cpu'
-        self.device = 'cpu'
+        self.device = 'cuda'
         print('\n\nDevice Used: ', self.device)
         
     
     def load_model(self):
-        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det\weights\best.pt')
+        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det_low\weights\best.pt')
         return model
     
     def score_frame(self, frame):
@@ -61,7 +61,27 @@ class ObjectDetection:
             
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
-        
+
+def resize(img, scale_percent=.05):
+    width = int(img.shape[1] * scale_percent)
+    height = int(img.shape[0] * scale_percent)
+    dim = (width, height)
+    return cv.resize(img, dim, interpolation=cv.INTER_AREA)
+
+def process_image(path):
+    img = cv.imread(path)
+    img = resize(img, scale_percent=1.25)
+    detection = ObjectDetection()
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    results = detection.score_frame(gray)
+    img = detection.plot_boxes(results, img)
+    cv.imshow('Detected', img)
+    cv.waitKey(0)
+    
+
+#process_image(r'C:\UNO Synthetic Generator\Untitled.png')
+#cv.waitKey(0)
+
 detection = ObjectDetection()
 detection()
     
