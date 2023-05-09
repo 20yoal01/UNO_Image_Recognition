@@ -48,19 +48,17 @@ img = cv.imread('20230406_151513.jpg')
 img = cv.resize(img, None, fx= SCALE_PERCENT, fy= SCALE_PERCENT, interpolation=cv.INTER_AREA)
 
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-#blur = cv.GaussianBlur(gray, (7,7), cv.BORDER_DEFAULT)
-
-#canny = cv.Canny(blur, LOWER_THRESHOLD, UPPER_THRESHOLD, apertureSize=APERTURE_SIZE)
 
 ret,thresh= cv.threshold(gray,150,255,0)
 cv.imshow('thresholded original',thresh)
 cv.waitKey(0)
 
-contours, hierarchies = cv.findContours(thresh, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-
-imx = img.shape[0]
-imy = img.shape[1]
-lp_area = (imx * imy) / 10
+#contours, hierarchies = cv.findContours(thresh, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
+#
+#
+#imx = img.shape[0]
+#imy = img.shape[1]
+#lp_area = (imx * imy) / 10
 
 #for cnt in contours:
 #    approx = cv.approxPolyDP(cnt, 0.01 * cv.arcLength(cnt, True), True)
