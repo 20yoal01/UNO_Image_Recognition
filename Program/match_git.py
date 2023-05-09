@@ -24,6 +24,8 @@ cv.imshow('Wrong thresh',thresh_w)
 diff_img_w = cv.absdiff(thresh_w,thresh_qw)
 cv.imshow('diff wrong', diff_img_w)
 
+print(diff_img)
+
 rank_diff = int(np.sum(diff_img)/255)
 print(rank_diff)
 
