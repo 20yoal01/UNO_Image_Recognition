@@ -4,8 +4,9 @@ import cv2 as cv
 TEMPLATE_WIDTH = 225
 TEMPLATE_HIGHT = 349
 
-qImg = cv.imread(r'Templates\Color_re\yellow_one.jpg', cv.IMREAD_UNCHANGED)
-rImg = cv.imread(r'Templates\Color_re\wild_wild_card.jpg', cv.IMREAD_UNCHANGED)
+qImg = cv.imread(r'red_nine_test.jpg', cv.IMREAD_UNCHANGED)
+rImg = cv.imread(r'Templates\Color_re\red_nine.jpg', cv.IMREAD_UNCHANGED)
+qImg = cv.resize(qImg,(TEMPLATE_WIDTH,TEMPLATE_HIGHT), cv.INTER_AREA)
 
 qImg = cv.cvtColor(qImg, cv.COLOR_BGR2HSV).astype("float32")
 rImg = cv.cvtColor(rImg, cv.COLOR_BGR2HSV).astype("float32")
