@@ -5,7 +5,7 @@ TEMPLATE_WIDTH = 225
 TEMPLATE_HIGHT = 349
 
 qImg = cv.imread(r'red_nine_test.jpg', cv.IMREAD_UNCHANGED)
-rImg = cv.imread(r'Templates\Color_re\red_nine.jpg', cv.IMREAD_UNCHANGED)
+rImg = cv.imread(r'Templates\Color_re\blue_nine.jpg', cv.IMREAD_UNCHANGED)
 qImg = cv.resize(qImg,(TEMPLATE_WIDTH,TEMPLATE_HIGHT), cv.INTER_AREA)
 
 qImg = cv.cvtColor(qImg, cv.COLOR_BGR2HSV).astype("float32")

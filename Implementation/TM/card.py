@@ -114,4 +114,4 @@ def process(img):
     cv.imshow('blank', blank)
     cv.waitKey(0)
 
-    return processed
+    return cards[0]

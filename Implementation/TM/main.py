@@ -11,6 +11,6 @@ img = cv.imread('frame.jpg')
 
 procImg = card.process(img)
 
-#matchedCard = templateMatch(procImg)
+matchedCard = templateMatch.match(procImg)
 
 #print(matchedCard.type)
