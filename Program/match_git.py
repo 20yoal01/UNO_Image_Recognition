@@ -2,8 +2,8 @@ import numpy as np
 import cv2 as cv
 
 qImg = cv.imread('red_nine_test.jpg', cv.IMREAD_GRAYSCALE)
-rImg = cv.imread(r'Templates\Bin_re\green_nine.jpg', cv.IMREAD_GRAYSCALE)
-wImg = cv.imread(r'Templates\Bin_re\blue_s.jpg', cv.IMREAD_GRAYSCALE)
+rImg = cv.imread(r'Templates\Bin\blue_nine.jpg', cv.IMREAD_GRAYSCALE)
+wImg = cv.imread(r'Templates\Bin\red_s.jpg', cv.IMREAD_GRAYSCALE)
 qImgw = cv.resize(qImg, (225,349), 0, 0)
 qImgr = cv.resize(qImg, (225,349), 0, 0)
 

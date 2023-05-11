@@ -24,7 +24,6 @@ def extract_points(img):
     botRight = (br[0][0], br[0][1])
     botLeft = (bl[0][0], bl[0][1])
     pts = np.array([topLeft,topRight,botRight,botLeft])
-    print(pts)
     return pts
 
 
@@ -41,17 +40,9 @@ def order_points(pts):
 
 def four_point_transform(image, cnt):
     pts = extract_points(image)
-    #cv.drawContours(image, [pts], 0, (0, 0, 255), 2)
-    rect = order_points(pts)
     (topL,topR,botR,botL) = pts
-    wBottom = np.sqrt(((botR[0] - botL[0]) ** 2) + ((botR[1] - botL[1]) ** 2))
-    wTop = np.sqrt(((topR[0] - topL[0]) ** 2) + ((topR[1] - topL[1]) ** 2))
-    #maxWidth = max(int(wBottom), int(wTop))
     maxWidth = TEMPLATE_WIDTH
     maxHeight = TEMPLATE_HIGHT
-    hRight = np.sqrt(((topR[0] - botR[0]) ** 2) + ((topR[1] - botR[1]) ** 2))
-    hLeft = np.sqrt(((topL[0] - botL[0]) ** 2) + ((topL[1] - botL[1]) ** 2))
-    #maxHeight = max(int(hRight), int(hLeft))
     dst = np.array([
         [0, 0],
         [maxWidth - 1, 0],
@@ -109,9 +100,5 @@ def process(img):
             cards.append(four_point_transform(blank, cnt_sorted[i]))
 
     cv.copyTo(processed,blank,blank)
-    cv.imshow('trans',cards[0])
-
-    cv.imshow('blank', blank)
-    cv.waitKey(0)
 
     return cards[0]

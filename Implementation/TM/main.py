@@ -13,4 +13,4 @@ procImg = card.process(img)
 
 matchedCard = templateMatch.match(procImg)
 
-#print(matchedCard.type)
+print(matchedCard)
