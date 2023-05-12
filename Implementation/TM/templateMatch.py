@@ -5,7 +5,7 @@ import os
 COLOR_MAP_PATH = 'Templates/Color/'
 COLOR_TEMPLATES_PATH = ['blue_one', 'red_one', 'green_one', 'yellow_one', 'wild_wild_card', 'wild_wild_custom', 'wild_d4', 'wild_wild_shuffle']
 COLORS = ['blue', 'red', 'green', 'yellow', 'wild', 'wild', 'wild', 'wild']
-BIN_TEMPLATES_PATH = 'Templates/Bin/'
+BIN_TEMPLATES_PATH = 'Templates/Bin_v2/'
 
 def match(img):
     color_templates = []
@@ -31,8 +31,6 @@ def match(img):
     else:
         bin_path += 'yellow/'
         file_dir = os.listdir(BIN_TEMPLATES_PATH + 'yellow')
-    
-    print(file_dir)
 
     for file in file_dir: 
         if file != 'yellow':
@@ -45,16 +43,21 @@ def match(img):
 
     bin_diff = []
 
+    index = 0
+
     for tempalte_bin in bin_templates: 
         temp_diff = cv.absdiff(thresh_qCard,tempalte_bin)
+        cv.imshow(str(index),temp_diff)
+        index += 1
         bin_diff.append(int(np.sum(temp_diff)/255))
-    
-    print(bin_diff)
 
+    print('diff')
+    print(np.argmax(bin_diff))
     best_match_symbol = file_dir[np.argmax(bin_diff)]
-    print('' + best_match_symbol)
 
-    index = best_match_symbol.find('_')
-    match = best_match_color + ' ' + file_dir[index+1:len(best_match_symbol)-4]
-
+    match = best_match_color + ' ' + str(best_match_symbol[0:len(best_match_symbol)-4])
+    print(bin_diff)
+    print(file_dir)
+    print(match)
+    cv.waitKey(0)
     return match
