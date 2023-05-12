@@ -40,7 +40,6 @@ def order_points(pts):
 
 def four_point_transform(image, cnt):
     pts = extract_points(image)
-    (topL,topR,botR,botL) = pts
     maxWidth = TEMPLATE_WIDTH
     maxHeight = TEMPLATE_HIGHT
     dst = np.array([

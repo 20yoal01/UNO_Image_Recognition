@@ -27,10 +27,13 @@ def match(img):
     
     if best_match_color != 'yellow':
         file_dir = os.listdir(BIN_TEMPLATES_PATH)
+        
     else:
         bin_path += 'yellow/'
         file_dir = os.listdir(BIN_TEMPLATES_PATH + 'yellow')
     
+    print(file_dir)
+
     for file in file_dir: 
         if file != 'yellow':
             temp = cv.imread(bin_path + file, cv.IMREAD_GRAYSCALE)
@@ -46,9 +49,12 @@ def match(img):
         temp_diff = cv.absdiff(thresh_qCard,tempalte_bin)
         bin_diff.append(int(np.sum(temp_diff)/255))
     
+    print(bin_diff)
+
     best_match_symbol = file_dir[np.argmax(bin_diff)]
+    print('' + best_match_symbol)
 
     index = best_match_symbol.find('_')
-    match = best_match_color + ' ' + best_match_symbol[index+1:len(best_match_symbol)-4]
+    match = best_match_color + ' ' + file_dir[index+1:len(best_match_symbol)-4]
 
     return match

@@ -7,7 +7,7 @@ import videoStream
 #################################
 # Testning på bara en frame
 #################################
-img = cv.imread('frame.jpg')
+img = cv.imread(r'C:\Users\ejestxa\Documents\img\UNO_Image_Recognition\frame.jpg')
 
 procImg = card.process(img)
 

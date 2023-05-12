@@ -2,15 +2,36 @@ import cv2 as cv
 import numpy as np
 import os
 
+TEMPLATE_WIDTH = 225
+TEMPLATE_HIGHT = 349
 SCALE_PERCENT =.05
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
 UNO_CARDS_PATH = 'photos/'
-OUTPUT_GRAY = 'Templates/Gray/'
-OUTPUT_COLOR = 'Templates/Color/'
+OUTPUT_GRAY = 'Templates/Grayv2/'
+OUTPUT_COLOR = 'Templates/Colorv2/'
 CARD_TYPE = ['red', 'green', 'blue', 'yellow', 'wild']
 CARD_AMOUNT = 56
+
+def extract_points(img):
+    img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    corners = cv.goodFeaturesToTrack(img_gray, 500, 0.01,5)
+
+    c = corners.sum(axis=2)
+    cd = np.diff(corners,axis=2)
+
+    tl = corners[np.argmin(c)]
+    br = corners[np.argmax(c)]
+    tr = corners[np.argmin(cd)]
+    bl = corners[np.argmax(cd)]
+
+    topLeft = (tl[0][0], tl[0][1])
+    topRight = (tr[0][0], tr[0][1])
+    botRight = (br[0][0], br[0][1])
+    botLeft = (bl[0][0], bl[0][1])
+    pts = np.array([topLeft,topRight,botRight,botLeft])
+    return pts
 
 #Lägger in rätt punkter på rätt plats i rektangeln
 def order_points(pts):
@@ -24,22 +45,17 @@ def order_points(pts):
     return rect
 
 #Utför en perspektiv transformation 
-def four_point_transform(image, pts):
-    rect = order_points(pts)
-    (topL,topR,botR,botL) = rect
-    wBottom = np.sqrt(((botR[0] - botL[0]) ** 2) + ((botR[1] - botL[1]) ** 2))
-    wTop = np.sqrt(((topR[0] - topL[0]) ** 2) + ((topR[1] - topL[1]) ** 2))
-    maxWidth = max(int(wBottom), int(wTop))
-    hRight = np.sqrt(((topR[0] - botR[0]) ** 2) + ((topR[1] - botR[1]) ** 2))
-    hLeft = np.sqrt(((topL[0] - botL[0]) ** 2) + ((topL[1] - botL[1]) ** 2))
-    maxHeight = max(int(hRight), int(hLeft))
+def four_point_transform(image, cnt):
+    pts = extract_points(image)
+    maxWidth = TEMPLATE_WIDTH
+    maxHeight = TEMPLATE_HIGHT
     dst = np.array([
         [0, 0],
         [maxWidth - 1, 0],
         [maxWidth - 1, maxHeight - 1],
         [0, maxHeight - 1]], dtype = "float32")
-    M = cv.getPerspectiveTransform(rect, dst)
-    warped = cv.warpPerspective(image, M, (maxWidth, maxHeight))
+    M = cv.getPerspectiveTransform(pts, dst)
+    warped = cv.warpPerspective(image, M, (maxWidth, maxHeight), cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT, borderValue=(0,0,0))
     return warped
 
 def extract_uno(img):
