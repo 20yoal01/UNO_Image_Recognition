@@ -7,7 +7,7 @@ import random
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
-UNO_CARD_PATH = 'photos/wild/'
+UNO_CARD_PATH = 'photos/red/'
 UNO_TYPE = 'yellow'
 SATURATION_RANGE = (0, 30)
 VALUE_RANGE = (0, 40)
@@ -45,42 +45,49 @@ for file in file_dir:
 
     mask = np.zeros(img.shape[:2], dtype='uint8')
     cv.drawContours(mask, contours, -1, (255,255,255), -1)
-    mask = cv.erode(mask, None, iterations=2)
+    #mask = cv.erode(mask, None, iterations=2)
+    cv.imshow('mask', mask)
+    cv.waitKey(0)
+    blank = np.ones(img.shape[:2], dtype='uint8')
 
     mean_color = cv.mean(img, mask=mask)[:3]
+    print(mean_color)
     color_array.insert(len(color_array)-1,[str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
 
+blank = cv.copyTo(img, mask, blank)
 
-for x in range(loop_range):
-    for file in file_dir:
-        file_path = os.path.join(UNO_CARD_PATH,file)
-        print(file_path)
-        img = cv.imread(file_path)
-        img = cv.resize(img, None, fx= 0.03, fy= 0.03, interpolation=cv.INTER_AREA)
-        img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+cv.imwrite('masked_img.jpg', blank)
 
-        blur = cv.GaussianBlur(img_gray, (7,7), cv.BORDER_DEFAULT)
-        canny = cv.Canny(blur, LOWER_THRESHOLD, UPPER_THRESHOLD, apertureSize=APERTURE_SIZE)
-
-        kernel = np.ones((5,5),np.uint8)
-        canny = cv.dilate(canny,kernel,iterations = 1)
-        contours, hierarchies = cv.findContours(canny, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE) 
-
-        mask = np.zeros(img.shape[:2], dtype='uint8')
-        cv.drawContours(mask, contours, -1, (255,255,255), -1)
-        mask = cv.erode(mask, None, iterations=2)
-
-        saturation = round(random.uniform(SATURATION_RANGE[0], SATURATION_RANGE[1]), 2)
-        value = round(random.uniform(VALUE_RANGE[0], VALUE_RANGE[1]), 2)
-        img = changeHSV(img,saturation,value)
-
-
-        mean_color = cv.mean(img, mask=mask)[:3]
-        color_array.insert(len(color_array)-1,[str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
-        print(mean_color)
-
-    print(str(x+1) + "/" + str(loop_range))
-    
-print(color_array)
-arr = np.array(color_array)
-np.savetxt('yellow.csv',arr,fmt="%s",delimiter=",")
+#for x in range(loop_range):
+#    for file in file_dir:
+#        file_path = os.path.join(UNO_CARD_PATH,file)
+#        print(file_path)
+#        img = cv.imread(file_path)
+#        img = cv.resize(img, None, fx= 0.03, fy= 0.03, interpolation=cv.INTER_AREA)
+#        img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+#
+#        blur = cv.GaussianBlur(img_gray, (7,7), cv.BORDER_DEFAULT)
+#        canny = cv.Canny(blur, LOWER_THRESHOLD, UPPER_THRESHOLD, apertureSize=APERTURE_SIZE)
+#
+#        kernel = np.ones((5,5),np.uint8)
+#        canny = cv.dilate(canny,kernel,iterations = 1)
+#        contours, hierarchies = cv.findContours(canny, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE) 
+#
+#        mask = np.zeros(img.shape[:2], dtype='uint8')
+#        cv.drawContours(mask, contours, -1, (255,255,255), -1)
+#        mask = cv.erode(mask, None, iterations=2)
+#
+#        saturation = round(random.uniform(SATURATION_RANGE[0], SATURATION_RANGE[1]), 2)
+#        value = round(random.uniform(VALUE_RANGE[0], VALUE_RANGE[1]), 2)
+#        img = changeHSV(img,saturation,value)
+#
+#
+#        mean_color = cv.mean(img, mask=mask)[:3]
+#        color_array.insert(len(color_array)-1,[str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
+#        print(mean_color)
+#
+#    print(str(x+1) + "/" + str(loop_range))
+#    
+#print(color_array)
+#arr = np.array(color_array)
+#np.savetxt('yellow.csv',arr,fmt="%s",delimiter=",")
