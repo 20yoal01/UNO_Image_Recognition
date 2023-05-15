@@ -9,8 +9,8 @@ UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
 UNO_CARD_PATH = 'photos/yellow/'
 UNO_TYPE = 'yellow'
-SATURATION_RANGE = (0, 100)
-VALUE_RANGE = (-30, 255)
+SATURATION_RANGE = (0, 20)
+VALUE_RANGE = (0, 50)
 
 def changeHSV(img, saturation, value):
     changeImg = img.copy()
@@ -27,7 +27,7 @@ def changeHSV(img, saturation, value):
     return changeImg
 
 file_dir = os.listdir(UNO_CARD_PATH)
-loop_range = int(100/len(file_dir))
+loop_range = int(150/len(file_dir))
 color_array = []
 
 for file in file_dir:
@@ -73,11 +73,12 @@ for x in range(loop_range):
         value = round(random.uniform(VALUE_RANGE[0], VALUE_RANGE[1]), 2)
         img = changeHSV(img,saturation,value)
 
+
         mean_color = cv.mean(img, mask=mask)[:3]
-        color_array.insert(len(color_array)-1,[str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2])),UNO_TYPE])
+        color_array.insert(len(color_array)-1,[str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
         print(mean_color)
 
-    print(str(x) + "/" + str(loop_range))
+    print(str(x+1) + "/" + str(loop_range))
     
 
 print(color_array)
