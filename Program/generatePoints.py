@@ -7,10 +7,10 @@ import random
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
-UNO_CARD_PATH = 'photos/yellow/'
+UNO_CARD_PATH = 'photos/wild/'
 UNO_TYPE = 'yellow'
-SATURATION_RANGE = (0, 20)
-VALUE_RANGE = (0, 50)
+SATURATION_RANGE = (0, 30)
+VALUE_RANGE = (0, 40)
 
 def changeHSV(img, saturation, value):
     changeImg = img.copy()
@@ -48,7 +48,8 @@ for file in file_dir:
     mask = cv.erode(mask, None, iterations=2)
 
     mean_color = cv.mean(img, mask=mask)[:3]
-    color_array.insert(len(color_array)-1,[str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2])),UNO_TYPE])
+    color_array.insert(len(color_array)-1,[str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
+
 
 for x in range(loop_range):
     for file in file_dir:
@@ -80,7 +81,6 @@ for x in range(loop_range):
 
     print(str(x+1) + "/" + str(loop_range))
     
-
 print(color_array)
 arr = np.array(color_array)
 np.savetxt('yellow.csv',arr,fmt="%s",delimiter=",")
