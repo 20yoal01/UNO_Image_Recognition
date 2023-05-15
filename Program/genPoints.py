@@ -7,8 +7,8 @@ import random
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
-UNO_CARD_PATH = 'photos/yellow/'
-UNO_TYPE = 'yellow'
+UNO_CARD_PATH = 'photos/blue/'
+UNO_TYPE = 'blue'
 SATURATION_RANGE = (0, 30)
 VALUE_RANGE = (0, 40)
 
@@ -47,7 +47,7 @@ for file in file_dir:
     cv.drawContours(mask, contours, -1, (255,255,255), -1)
     mask = cv.erode(mask, None, iterations=2)
     blank = np.ones(img.shape[:2], dtype='uint8')
-    img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV).astype(np.float32)
     print(img_hsv)
     mean_color = cv.mean(img_hsv, mask=mask)[:3]
     print(mean_color)
@@ -64,4 +64,4 @@ for file in file_dir:
         print(mean_color)
 
 arr = np.array(color_array)
-np.savetxt('yellow_hsv.csv', arr, fmt="%s", delimiter=",")
+np.savetxt('blue_hsv.csv', arr, fmt="%s", delimiter=",")
