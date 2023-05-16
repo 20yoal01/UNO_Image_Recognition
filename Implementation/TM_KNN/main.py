@@ -7,7 +7,7 @@ import videoStream
 #################################
 # Testning på bara en frame
 #################################
-img = cv.imread(r'C:\Users\eyoalxa\Documents\Python OpenCV\photos\RED\four.jpg')
+img = cv.imread(r'frame.jpg')
 
 procImg = card.process(img)
 
