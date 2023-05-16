@@ -2,11 +2,11 @@ from mpl_toolkits import mplot3d
 import numpy as np
 import matplotlib.pyplot as plt
 
-blue = np.loadtxt('blue_bgr.csv', delimiter=",", dtype=int)
-green = np.loadtxt('green_bgr.csv', delimiter=",", dtype=int)
-red = np.loadtxt('red_bgr.csv', delimiter=",", dtype=int)
-wild = np.loadtxt('wild_bgr.csv', delimiter=",", dtype=int)
-yellow = np.loadtxt('yellow_bgr.csv', delimiter=",", dtype=int)
+blue = np.loadtxt('blue_hsv.csv', delimiter=",", dtype=int)
+green = np.loadtxt('green_hsv.csv', delimiter=",", dtype=int)
+red = np.loadtxt('red_hsv.csv', delimiter=",", dtype=int)
+wild = np.loadtxt('wild_hsv.csv', delimiter=",", dtype=int)
+yellow = np.loadtxt('yellow_hsv.csv', delimiter=",", dtype=int)
 
 print(blue[:,0])
  
@@ -20,11 +20,11 @@ ax.scatter3D(green[:,0], green[:,1], green[:,2], color = "green")
 ax.scatter3D(red[:,0], red[:,1], red[:,2], color = "red")
 ax.scatter3D(wild[:,0], wild[:,1], wild[:,2], color = "black")
 ax.scatter3D(yellow[:,0], yellow[:,1], yellow[:,2], color = "yellow")
-ax.scatter3D([0,0,0,255,0,255,255,255],[0,0,255,0,255,255,255,0],[0,255,0,0,255,0,255,255], color="white" )
+ax.scatter3D([0,0,0,180,0,180,180,180],[0,0,255,0,255,255,255,0],[0,255,0,0,255,0,255,255], color="white" )
 
-ax.set_xlabel('Blue', fontweight ='bold')
-ax.set_ylabel('Green', fontweight ='bold')
-ax.set_zlabel('Red', fontweight ='bold')
+ax.set_xlabel('hue', fontweight ='bold')
+ax.set_ylabel('saturation', fontweight ='bold')
+ax.set_zlabel('value', fontweight ='bold')
 plt.title("simple 3D scatter plot")
  
 
