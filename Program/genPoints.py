@@ -7,10 +7,11 @@ import random
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
-UNO_TYPE = 'yellow'
+UNO_TYPE = 'wild'
 UNO_CARD_PATH = 'photos/' + UNO_TYPE + '/'
-SATURATION_RANGE = (0, 100)
-VALUE_RANGE = (-30, 255)
+SATURATION_RANGE = (0, 30)
+VALUE_RANGE = (0, 50)
+
 
 def changeHSV(img, saturation, value):
     changeImg = img.copy()

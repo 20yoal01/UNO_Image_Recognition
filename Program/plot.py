@@ -21,6 +21,7 @@ ax.scatter3D(red[:,0], red[:,1], red[:,2], color = "red")
 ax.scatter3D(wild[:,0], wild[:,1], wild[:,2], color = "black")
 ax.scatter3D(yellow[:,0], yellow[:,1], yellow[:,2], color = "yellow")
 ax.scatter3D([0,0,0,180,0,180,180,180],[0,0,255,0,255,255,255,0],[0,255,0,0,255,0,255,255], color="white" )
+ax.scatter3D(103, 134, 137, color="magenta")
 
 ax.set_xlabel('hue', fontweight ='bold')
 ax.set_ylabel('saturation', fontweight ='bold')
