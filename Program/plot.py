@@ -2,11 +2,11 @@ from mpl_toolkits import mplot3d
 import numpy as np
 import matplotlib.pyplot as plt
 
-blue = np.loadtxt('blue_hsv.csv', delimiter=",", dtype=int)
-green = np.loadtxt('green_hsv.csv', delimiter=",", dtype=int)
-red = np.loadtxt('red_hsv.csv', delimiter=",", dtype=int)
-wild = np.loadtxt('wild_hsv.csv', delimiter=",", dtype=int)
-yellow = np.loadtxt('yellow_hsv.csv', delimiter=",", dtype=int)
+blue = np.loadtxt('new_in/blue_bgr.csv', delimiter=",", dtype=int)
+green = np.loadtxt('new_in/green_bgr.csv', delimiter=",", dtype=int)
+red = np.loadtxt('new_in/red_bgr.csv', delimiter=",", dtype=int)
+wild = np.loadtxt('new_in/wild_bgr.csv', delimiter=",", dtype=int)
+yellow = np.loadtxt('new_in/yellow_bgr.csv', delimiter=",", dtype=int)
 
 print(blue[:,0])
  

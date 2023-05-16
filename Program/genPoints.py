@@ -7,10 +7,10 @@ import random
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
-UNO_CARD_PATH = 'photos/yellow/'
 UNO_TYPE = 'yellow'
-SATURATION_RANGE = (0, 30)
-VALUE_RANGE = (0, 40)
+UNO_CARD_PATH = 'photos/' + UNO_TYPE + '/'
+SATURATION_RANGE = (0, 100)
+VALUE_RANGE = (-30, 255)
 
 def changeHSV(img, saturation, value):
     changeImg = img.copy()
@@ -61,4 +61,4 @@ for file in file_dir:
         color_array.append([str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
 
 arr = np.array(color_array)
-np.savetxt('yellow_bgr.csv', arr, fmt="%s", delimiter=",")
+np.savetxt('new_in/' + UNO_TYPE + '_bgr.csv', arr, fmt="%s", delimiter=",")
