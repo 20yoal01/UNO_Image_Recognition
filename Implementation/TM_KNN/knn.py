@@ -23,7 +23,7 @@ def getColor(qImg):
     mean = cv.mean(qImg)[:3]
     mean = np.asarray(mean).reshape((1,3)).astype(np.float32)
     print(mean)
-    arr = np.loadtxt("Implementation/TM_KNN/all_in.csv", delimiter=",", dtype=int).astype(np.float32)
+    arr = np.loadtxt("Implementation\KNN generator\COMPLETE.csv", delimiter=",", dtype=int).astype(np.float32)
     res = np.loadtxt("Implementation/TM_KNN/resv2.csv",dtype=int).astype(np.float32)
     knn= cv.ml.KNearest_create()
     knn.train(arr, cv.ml.ROW_SAMPLE, res)
@@ -38,7 +38,7 @@ def getColor(qImg):
     print('mean: ', mean)
     print('Dominant color is: bgr({})'.format(centers[0].astype(np.int32)))
     
-    ret, results, neighbours, dist = knn.findNearest(mean,7)
+    ret, results, neighbours, dist = knn.findNearest(mean, 27)
 
     #0: blue 
     #1: green

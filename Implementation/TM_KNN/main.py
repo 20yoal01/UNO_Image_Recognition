@@ -7,7 +7,7 @@ import videoStream
 #################################
 # Testning på bara en frame
 #################################
-img = cv.imread(r'frame.jpg')
+img = cv.imread(r'C:\UNO Synthetic Generator\red_nine_test.jpg')
 
 procImg = card.process(img)
 

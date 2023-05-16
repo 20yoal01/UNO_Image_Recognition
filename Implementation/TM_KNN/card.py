@@ -7,6 +7,12 @@ LOWER_THRESHOLD = 100
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 5
 
+# CNN + KNN // Integrera delarna tillsammans
+# TM + KNN  // Preprocessing
+# TM // Inte testad
+# CNN // Inte tränad
+
+
 def extract_points(img):
     img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     corners = cv.goodFeaturesToTrack(img_gray, 500, 0.01,5)
@@ -54,7 +60,7 @@ def four_point_transform(image, cnt):
 def process(img):
     processed = img.copy()
 
-    processed = cv.resize(processed, None, fx=0.5, fy=0.5, interpolation=cv.INTER_AREA)
+    processed = cv.resize(processed, None, fx=0.05, fy=0.05, interpolation=cv.INTER_AREA)
 
     gray = cv.cvtColor(processed, cv.COLOR_BGR2GRAY)
     blur = cv.medianBlur(gray, 11)

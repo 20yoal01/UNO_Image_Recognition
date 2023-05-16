@@ -51,7 +51,7 @@ def four_point_transform(image, cnt):
     warped = cv.warpPerspective(image, M, (maxWidth, maxHeight), cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT, borderValue=(0,0,0))
     return warped
 
-def resize(img, scale_percent=.05):
+def resize(img, scale_percent=.40):
     width = int(img.shape[1] * scale_percent)
     height = int(img.shape[0] * scale_percent)
     dim = (width, height)
@@ -83,7 +83,7 @@ def process(img):
     
     cv.drawContours(mask, contours, -1, (255,255,255), thickness=cv.FILLED)
     
-    cv.imshow('a',mask)
+    #cv.imshow('a',mask)
     cv.waitKey(0)
     
     for i in index_sort:
