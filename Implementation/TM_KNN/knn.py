@@ -18,6 +18,7 @@ def hisEqulColor(img):
 def getColor(qImg):
     cv.imshow('img', qImg)
     qImg = hisEqulColor(qImg)
+    cv.imshow('4', qImg)
     cv.waitKey(0)
     mean = cv.mean(qImg)[:3]
     mean = np.asarray(mean).reshape((1,3)).astype(np.float32)

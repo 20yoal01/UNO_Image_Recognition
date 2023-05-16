@@ -59,9 +59,6 @@ def process(img):
     gray = cv.cvtColor(processed, cv.COLOR_BGR2GRAY)
     blur = cv.medianBlur(gray, 11)
     blur = cv.bilateralFilter(blur, 9, 130, 130)
-    
-    cv.imshow('1', blur)
-    cv.waitKey(0)
         
     canny = cv.Canny(blur, LOWER_THRESHOLD, UPPER_THRESHOLD, apertureSize=APERTURE_SIZE)
     karnel = np.ones((5,5), np.uint8)

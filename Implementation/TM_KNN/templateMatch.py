@@ -62,10 +62,7 @@ def match(img):
 
     #qImg_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     #ret, thresh_qCard = cv.threshold(qImg_gray, 127, 255, cv.THRESH_BINARY_INV)
-    cv.imshow('red', img)
     thresh_qCard = threshold_uno_card(img)
-    cv.imshow('abc', thresh_qCard)
-    cv.waitKey(0)
     
     bin_diff = []
 
