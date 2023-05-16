@@ -14,7 +14,7 @@ class ObjectDetection:
         
     
     def load_model(self):
-        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det_low\weights\best.pt')
+        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det_color_low\weights\best.pt')
         return model
     
     def score_frame(self, frame):
@@ -51,8 +51,8 @@ class ObjectDetection:
             ret, frame = cap.read()
             if not ret:
                 break
-            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            results = self.score_frame(gray)
+            rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            results = self.score_frame(rgb)
             frame = self.plot_boxes(results, frame)
             end_time = time.perf_counter()
             fps = 1 / np.round(end_time - start_time, 3)
@@ -84,5 +84,3 @@ def process_image(path):
 
 detection = ObjectDetection()
 detection()
-    
-

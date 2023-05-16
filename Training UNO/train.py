@@ -5,18 +5,18 @@ import random
 import math
 
 
-UNO_CARDS_PATH = 'Photos V2/'
-OUTPUT = 'UNO Syn/images'
-LABEL_PATH = 'UNO Syn/labels'
-BACKGROUND_PATH = 'background'
+UNO_CARDS_PATH = 'Training UNO/Photos V2/'
+OUTPUT = 'Training UNO/UNO Syn/images'
+LABEL_PATH = 'Training UNO/UNO Syn/labels'
+BACKGROUND_PATH = 'Training UNO/solid background'
 CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 
 # IMAGES_PER_CARD = 200
 # TOTAL_CARDS_TO_GENERATE = 56
 
 
-IMAGES_PER_CARD = 1
-TOTAL_CARDS_TO_GENERATE = 5
+IMAGES_PER_CARD = 10
+TOTAL_CARDS_TO_GENERATE = 56
 
 # DEFAULT
 # (720, 1280)
@@ -29,13 +29,14 @@ TOTAL_CARDS_TO_GENERATE = 5
 
 
 TARGET_HEIGHT, TARGET_WIDTH = (720, 1280)
-ROTATE_RANGE = [-180, 180]
+ROTATE_RANGE = [-90, 90]
 TRANSLATE_RANGE = [(TARGET_WIDTH//2) * 0.10, (TARGET_HEIGHT//2) * 0.10]
-PROJECTION_RANGE = (-0.60, 0.60)
+PROJECTION_RANGE = (-0.1, 0.10)
 SATURATION_RANGE = (0, 100)
 VALUE_RANGE = (-30, 255)
+SCALE_RANGE = (0.025, 0.075)
 
-USE_COLORED_CARDS = False
+USE_COLORED_CARDS = True
 
 class_name_to_id_mapping = None
 
@@ -121,9 +122,9 @@ else:
 
 
 DATASPLIT = {
-    'Train': 1.0,
-    'Validation': 0,
-    'Test': 0
+    'Train': 0.7,
+    'Validation': 0.15,
+    'Test': 0.15
 }
 
 
@@ -365,10 +366,11 @@ while True:
     dataset_index = -1
     dataset_size = 0
     dataset_current = 0
-
+    scale_range = round(random.uniform(SCALE_RANGE[0], SCALE_RANGE[1]), 2)
+    
     filepath = os.path.join(CURRENT_UNO_PATH, filename)
     img = cv.imread(filepath)
-    img_resized = resize(img, scale_percent=0.025)
+    img_resized = resize(img, scale_percent=scale_range)
 
     mask, card_info = extract_uno(img_resized)
 
