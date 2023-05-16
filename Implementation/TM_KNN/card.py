@@ -54,12 +54,15 @@ def four_point_transform(image, cnt):
 def process(img):
     processed = img.copy()
 
-    processed = cv.resize(processed, None, fx=0.5, fy=0.5, interpolation=cv.INTER_AREA)
+    processed = cv.resize(processed, None, fx=0.05, fy=0.05, interpolation=cv.INTER_AREA)
 
     gray = cv.cvtColor(processed, cv.COLOR_BGR2GRAY)
     blur = cv.medianBlur(gray, 11)
     blur = cv.bilateralFilter(blur, 9, 130, 130)
     
+    cv.imshow('1', blur)
+    cv.waitKey(0)
+        
     canny = cv.Canny(blur, LOWER_THRESHOLD, UPPER_THRESHOLD, apertureSize=APERTURE_SIZE)
     karnel = np.ones((5,5), np.uint8)
     canny = cv.dilate(canny, karnel,iterations=1)
