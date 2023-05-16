@@ -47,7 +47,6 @@ def match(img):
 
     for tempalte_bin in bin_templates: 
         temp_diff = cv.absdiff(thresh_qCard,tempalte_bin)
-        cv.imshow(str(index),temp_diff)
         index += 1
         bin_diff.append(int(np.sum(temp_diff)/255))
 
@@ -59,5 +58,4 @@ def match(img):
     print(bin_diff)
     print(file_dir)
     print(match)
-    cv.waitKey(0)
     return match

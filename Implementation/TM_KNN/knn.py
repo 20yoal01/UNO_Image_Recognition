@@ -9,9 +9,10 @@ def getColor(qImg):
     mean = np.asarray(mean).reshape((1,3)).astype(np.float32)
     print(mean)
     arr = np.loadtxt("Implementation/TM_KNN/all_bgr.csv", delimiter=",", dtype=int).astype(np.float32)
-    res = np.loadtxt("Implementation/TM_KNN/resv2.csv",dtype=int).astype(np.float32)
+    knn_train = arr[:, :3]
+    knn_val = arr[:,3]
     knn= cv.ml.KNearest_create()
-    knn.train(arr, cv.ml.ROW_SAMPLE, res)
+    knn.train(knn_train, cv.ml.ROW_SAMPLE, knn_val)
     ret, results, neighbours, dist = knn.findNearest(mean,27)
 
     #0: blue 
