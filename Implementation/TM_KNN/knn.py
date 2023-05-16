@@ -4,14 +4,12 @@ import cv2 as cv
 COLORS = ['blue', 'green', 'red', 'wild', 'yellow']
 
 def getColor(qImg):
-    qImg = cv.cvtColor(qImg, cv.COLOR_BGR2HSV).astype(np.float32)
 
     mean = cv.mean(qImg)[:3]
     mean = np.asarray(mean).reshape((1,3)).astype(np.float32)
     print(mean)
-    arr = np.loadtxt("Implementation/TM_KNN/all_hsv.csv", delimiter=",", dtype=int).astype(np.float32)
+    arr = np.loadtxt("Implementation/TM_KNN/all_bgr.csv", delimiter=",", dtype=int).astype(np.float32)
     res = np.loadtxt("Implementation/TM_KNN/resv2.csv",dtype=int).astype(np.float32)
-    newcomer = np.asarray([100,110,130]).reshape((1,3)).astype(np.float32)
     knn= cv.ml.KNearest_create()
     knn.train(arr, cv.ml.ROW_SAMPLE, res)
     ret, results, neighbours, dist = knn.findNearest(mean,27)
