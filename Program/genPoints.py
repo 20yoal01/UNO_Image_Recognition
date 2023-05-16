@@ -7,8 +7,8 @@ import random
 LOWER_THRESHOLD = 0
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 3
-UNO_CARD_PATH = 'photos/blue/'
-UNO_TYPE = 'blue'
+UNO_CARD_PATH = 'photos/yellow/'
+UNO_TYPE = 'yellow'
 SATURATION_RANGE = (0, 30)
 VALUE_RANGE = (0, 40)
 
@@ -23,7 +23,7 @@ def changeHSV(img, saturation, value):
     s[s > lim] = 255 
     s[s <= lim] += saturation
     changeImg = cv.merge([h,s,v])
-    #changeImg = cv.cvtColor(changeImg.astype("uint8"), cv.COLOR_HSV2BGR)
+    changeImg = cv.cvtColor(changeImg.astype("uint8"), cv.COLOR_HSV2BGR)
     return changeImg
 
 file_dir = os.listdir(UNO_CARD_PATH)
@@ -47,21 +47,18 @@ for file in file_dir:
     cv.drawContours(mask, contours, -1, (255,255,255), -1)
     mask = cv.erode(mask, None, iterations=2)
     blank = np.ones(img.shape[:2], dtype='uint8')
-    img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV).astype(np.float32)
-    print(img_hsv)
-    mean_color = cv.mean(img_hsv, mask=mask)[:3]
-    print(mean_color)
+    #img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV).astype(np.float32)
+    #print(img_hsv)
+    mean_color = cv.mean(img, mask=mask)[:3]
     color_array.append([str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
 
     for x in range(loop_range):
-        img_hsv = img.copy()
         saturation = round(random.uniform(SATURATION_RANGE[0], SATURATION_RANGE[1]), 2)
         value = round(random.uniform(VALUE_RANGE[0],VALUE_RANGE[1]), 2)
-        img_hsv = changeHSV(img,saturation,value)
-
-        mean_color = cv.mean(img_hsv, mask=mask)[:3]
+        img_hsv_mod = changeHSV(img,saturation,value)
+        #img_hsv_mod = cv.cvtColor(img_hsv_mod, cv.COLOR_HSV2RGB)
+        mean_color = cv.mean(img_hsv_mod, mask=mask)[:3]
         color_array.append([str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
-        print(mean_color)
 
 arr = np.array(color_array)
-np.savetxt('blue_hsv.csv', arr, fmt="%s", delimiter=",")
+np.savetxt('yellow_bgr.csv', arr, fmt="%s", delimiter=",")
