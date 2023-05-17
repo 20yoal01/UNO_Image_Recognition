@@ -60,7 +60,7 @@ def four_point_transform(image, cnt):
 def process(img):
     processed = img.copy()
 
-    processed = cv.resize(processed, None, fx=0.05, fy=0.05, interpolation=cv.INTER_AREA)
+    processed = cv.resize(processed, None, fx=0.5, fy=0.5, interpolation=cv.INTER_AREA)
 
     gray = cv.cvtColor(processed, cv.COLOR_BGR2GRAY)
     blur = cv.medianBlur(gray, 11)
