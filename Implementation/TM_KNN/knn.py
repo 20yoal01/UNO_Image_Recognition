@@ -7,8 +7,8 @@ def getColor(qImg):
     mean = cv.mean(qImg)[:3]
     mean = np.asarray(mean).reshape((1,3)).astype(np.float32)
     print(mean)
-    arr = np.loadtxt("Implementation\KNN generator\COMPLETE.csv", delimiter=",", dtype=int).astype(np.float32)
-    res = np.loadtxt("Implementation/TM_KNN/resv2.csv",dtype=int).astype(np.float32)
+    arr = np.loadtxt("new_all_bgr.csv", delimiter=",", dtype=int).astype(np.float32)
+    res = np.loadtxt("resv2.csv",dtype=int).astype(np.float32)
     knn= cv.ml.KNearest_create()
     knn.train(arr, cv.ml.ROW_SAMPLE, res)
     

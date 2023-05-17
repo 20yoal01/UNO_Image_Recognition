@@ -7,7 +7,7 @@ import videoStream
 #################################
 # Testning på bara en frame
 #################################
-img = cv.imread(r'photos\new\green\WIN_20230516_15_37_27_Pro.jpg')
+img = cv.imread(r'photos\new\yellow\WIN_20230516_15_39_09_Pro.jpg')
 
 procImg = card.process(img)
 
