@@ -13,9 +13,17 @@ APERTURE_SIZE = 5
 # CNN // Inte tränad
 
 
-def extract_points(img):
+def extract_points(img, mask):
     img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    corners = cv.goodFeaturesToTrack(img_gray, 500, 0.01,5)
+    corners = cv.goodFeaturesToTrack(img_gray, 500, 0.01, 5)
+
+    for i in corners:
+        x,y = i.ravel()
+        cv.circle(img,(int(x),int(y)),3,(0,0,255),-1)
+
+
+    cv.imshow('img', img)
+    cv.waitKey(0)
 
     c = corners.sum(axis=2)
     cd = np.diff(corners,axis=2)
@@ -44,8 +52,29 @@ def order_points(pts):
     rect[3] = pts[np.argmax(diff)]
     return rect
 
-def four_point_transform(image, cnt):
-    pts = extract_points(image)
+def extract_four_points(img, cnt):
+    img_controll = img.copy()
+    bl = tuple(cnt[cnt[:, :, 0].argmin()][0])
+    tr = tuple(cnt[cnt[:, :, 0].argmax()][0])
+    tl = tuple(cnt[cnt[:, :, 1].argmin()][0])
+    br = tuple(cnt[cnt[:, :, 1].argmax()][0])
+    topLeft = (tl[0], tl[1])
+    topRight = (tr[0], tr[1])
+    botRight = (br[0], br[1])
+    botLeft = (bl[0], bl[1])
+    cv.circle(img_controll, botLeft, 8, (0, 0, 255), -1)
+    cv.circle(img_controll, topRight, 8, (0, 255, 0), -1)
+    cv.circle(img_controll, topLeft, 8, (255, 0, 0), -1)
+    cv.circle(img_controll, botRight, 8, (255, 255, 0), -1)
+    cv.imshow('test', img_controll)
+    cv.waitKey(0)
+    print(botLeft)
+    pts = np.array([topLeft,topRight,botRight,botLeft]).astype(np.float32)
+    return pts
+
+def four_point_transform(image, mask, cnt):
+    pts = extract_four_points(image,cnt)
+    print(pts)
     maxWidth = TEMPLATE_WIDTH
     maxHeight = TEMPLATE_HIGHT
     dst = np.array([
@@ -53,8 +82,9 @@ def four_point_transform(image, cnt):
         [maxWidth - 1, 0],
         [maxWidth - 1, maxHeight - 1],
         [0, maxHeight - 1]], dtype="float32")
+    print(dst)
     M = cv.getPerspectiveTransform(pts, dst)
-    warped = cv.warpPerspective(image, M, (maxWidth, maxHeight), cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT, borderValue=(0,0,0))
+    warped = cv.warpPerspective(image, M, (maxWidth, maxHeight))
     return warped
 
 def process(img):
@@ -72,7 +102,7 @@ def process(img):
     ret, threshold = cv.threshold(canny, 125, 255, cv.THRESH_BINARY)
     contours, hier = cv.findContours(threshold, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     
-    mask = np.zeros(shape=processed.shape, dtype=np.uint8)
+    mask = np.zeros(shape=processed.shape[:2], dtype=np.uint8)
 
     index_sort = sorted(range(len(contours)), key=lambda i : cv.contourArea(contours[i]), reverse=True)
 
@@ -81,8 +111,6 @@ def process(img):
     cards = []
 
     contour_is_card = np.zeros(len(contours), dtype=int)
-    
-    cv.drawContours(mask, contours, -1, (255,255,255), thickness=cv.FILLED)
     
     for i in index_sort:
         cnt_sorted.append(contours[i])
@@ -100,10 +128,11 @@ def process(img):
 
     for i in range(len(cnt_sorted)):
         if (contour_is_card[i] == 1):
-            cv.drawContours(blank, [cnt_sorted[i]], -1, (255,225,225), -1)
-            cv.copyTo(processed,blank,blank)
-            cards.append(four_point_transform(blank, cnt_sorted[i]))
-
-    cv.copyTo(processed,blank,blank)
+            cv.drawContours(mask, [cnt_sorted[i]], -1, (255,225,225), -1)
+            mask = cv.erode(mask, None, iterations=2)
+            cv.imshow('mask', mask)
+            cv.waitKey(0)
+            cv.copyTo(processed,mask,blank)
+            cards.append(four_point_transform(blank, mask, cnt_sorted[i]))
 
     return cards[0]
