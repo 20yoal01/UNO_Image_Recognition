@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import cv2 as cv
 import time
+import knn
 
 class ObjectDetection:
 
@@ -9,12 +10,12 @@ class ObjectDetection:
         self.model = self.load_model()
         self.classes = self.model.names
         # self.device = 'cuda' if torch.cuda.is_available else 'cpu'
-        self.device = 'cuda'
+        self.device = 'cpu'
         print('\n\nDevice Used: ', self.device)
         
     
     def load_model(self):
-        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det_color_low\weights\best.pt')
+        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det_low_v2\weights\best.pt')
         return model
     
     def score_frame(self, frame):
@@ -38,7 +39,11 @@ class ObjectDetection:
                 x1, y1, x2, y2 = int(row[0]*x_shape), int(row[1]*y_shape), int(row[2]*x_shape), int(row[3]*y_shape)
                 bgr = (0, 255, 0)
                 cv.rectangle(frame, (x1,y1), (x2,y2), bgr, 2)
-                cv.putText(frame, self.class_to_label(labels[i]), (x1, y1), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
+                cropped_image = frame[y1:y2, x1:x2]
+                cv.imshow('cr', cropped_image)
+                cv.waitKey(0)
+                color = knn.getColor(cropped_image)
+                cv.putText(frame, color + ' ' + self.class_to_label(labels[i]), (x1, y1), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
                 
         return frame
     
