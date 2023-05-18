@@ -1,10 +1,12 @@
 import cv2 as cv
 import numpy as np
 
+IMG_WIDTH = 960
+IMG_HIGHT = 540
 TEMPLATE_WIDTH = 225
 TEMPLATE_HIGHT = 349
-LOWER_THRESHOLD = 100
-UPPER_THRESHOLD = 255
+LOWER_THRESHOLD = 50
+UPPER_THRESHOLD = 210
 APERTURE_SIZE = 5
 
 # CNN + KNN // Integrera delarna tillsammans
@@ -20,7 +22,6 @@ def extract_points(img, mask):
     for i in corners:
         x,y = i.ravel()
         cv.circle(img,(int(x),int(y)),3,(0,0,255),-1)
-
 
     cv.imshow('img', img)
     cv.waitKey(0)
@@ -40,41 +41,59 @@ def extract_points(img, mask):
     pts = np.array([topLeft,topRight,botRight,botLeft])
     return pts
 
-
-#TODO fixa så den tar hänsyn till att kortet är vridet 90grader
-def order_points(pts):
-    rect = np.zeros((4,2), dtype="float32")
-    s = pts.sum(axis=1)
-    rect[0] = pts[np.argmin(s)]
-    rect[2] = pts[np.argmax(s)]
-    diff = np.diff(pts, axis=1)
-    rect[1] = pts[np.argmin(diff)]
-    rect[3] = pts[np.argmax(diff)]
-    return rect
-
 def extract_four_points(img, cnt):
     img_controll = img.copy()
+    same_x_bl = []
+    same_x_tr = []
     bl = tuple(cnt[cnt[:, :, 0].argmin()][0])
+    for point in cnt:
+        if (point[0][0] == bl[0]):
+            same_x_bl.append(point[0])
+    same_x_bl.sort(key=lambda point: point[1], reverse=True)
+    bl = same_x_bl[0]
     tr = tuple(cnt[cnt[:, :, 0].argmax()][0])
+    for point in cnt:
+        if (point[0][0] == tr[0]):
+            same_x_tr.append(point[0])
+    same_x_tr.sort(key=lambda point: point[1], reverse=False)
+    tr = same_x_tr[0]
+    same_y_br = []
+    same_y_tl = []
     tl = tuple(cnt[cnt[:, :, 1].argmin()][0])
+    for point in cnt:
+        if (point[0][1] == tl[1]):
+            same_y_tl.append(point[0])
+    same_y_tl.sort(key=lambda point: point[0], reverse=False)
+    tl = same_y_tl[0]
     br = tuple(cnt[cnt[:, :, 1].argmax()][0])
-    topLeft = (tl[0], tl[1])
-    topRight = (tr[0], tr[1])
-    botRight = (br[0], br[1])
-    botLeft = (bl[0], bl[1])
+    for point in cnt:
+        if (point[0][1] == br[1]):
+            same_y_br.append(point[0])
+    same_y_br.sort(key=lambda point: point[0], reverse=True)
+    br = same_y_br[0]
+    width = np.sqrt((tl[0]-tr[0]) **2 + (tl[1]-tr[1]) **2)
+    hight = np.sqrt((tr[0]-br[0]) **2 + (tr[1]-br[1]) **2)
+    if(width < hight):
+        topLeft = (tl[0], tl[1])
+        topRight = (tr[0], tr[1])
+        botRight = (br[0], br[1])
+        botLeft = (bl[0], bl[1])
+    else:
+        topRight = (tl[0], tl[1])
+        botRight = (tr[0], tr[1])
+        botLeft = (br[0], br[1])
+        topLeft = (bl[0], bl[1])
     cv.circle(img_controll, botLeft, 8, (0, 0, 255), -1)
     cv.circle(img_controll, topRight, 8, (0, 255, 0), -1)
     cv.circle(img_controll, topLeft, 8, (255, 0, 0), -1)
     cv.circle(img_controll, botRight, 8, (255, 255, 0), -1)
     cv.imshow('test', img_controll)
     cv.waitKey(0)
-    print(botLeft)
     pts = np.array([topLeft,topRight,botRight,botLeft]).astype(np.float32)
     return pts
 
-def four_point_transform(image, mask, cnt):
+def four_point_transform(image, cnt):
     pts = extract_four_points(image,cnt)
-    print(pts)
     maxWidth = TEMPLATE_WIDTH
     maxHeight = TEMPLATE_HIGHT
     dst = np.array([
@@ -82,23 +101,29 @@ def four_point_transform(image, mask, cnt):
         [maxWidth - 1, 0],
         [maxWidth - 1, maxHeight - 1],
         [0, maxHeight - 1]], dtype="float32")
-    print(dst)
     M = cv.getPerspectiveTransform(pts, dst)
     warped = cv.warpPerspective(image, M, (maxWidth, maxHeight))
     return warped
 
 def process(img):
     processed = img.copy()
+    img_h, img_w = np.shape(img)[:2]
+    scale_x = IMG_WIDTH/img_w
+    scale_y = IMG_HIGHT/img_h
 
-    processed = cv.resize(processed, None, fx=0.5, fy=0.5, interpolation=cv.INTER_AREA)
-
+    processed = cv.resize(processed, None, fx=scale_x, fy=scale_y, interpolation=cv.INTER_AREA)
+    print(processed.shape)
     gray = cv.cvtColor(processed, cv.COLOR_BGR2GRAY)
     blur = cv.medianBlur(gray, 11)
     blur = cv.bilateralFilter(blur, 9, 130, 130)
-        
-    canny = cv.Canny(blur, LOWER_THRESHOLD, UPPER_THRESHOLD, apertureSize=APERTURE_SIZE)
+    mean_value = np.mean(blur)
+    lower_threshold = int(max(0, mean_value - 2 * np.std(blur)))
+    upper_threshold = int(min(255, mean_value + 2 * np.std(blur)))
+    canny = cv.Canny(blur, lower_threshold, upper_threshold, apertureSize=APERTURE_SIZE)
     karnel = np.ones((5,5), np.uint8)
     canny = cv.dilate(canny, karnel,iterations=1)
+    cv.imshow('canny', canny)
+    cv.waitKey(0)
     ret, threshold = cv.threshold(canny, 125, 255, cv.THRESH_BINARY)
     contours, hier = cv.findContours(threshold, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     
@@ -133,6 +158,6 @@ def process(img):
             cv.imshow('mask', mask)
             cv.waitKey(0)
             cv.copyTo(processed,mask,blank)
-            cards.append(four_point_transform(blank, mask, cnt_sorted[i]))
+            cards.append(four_point_transform(blank, cnt_sorted[i]))
 
     return cards[0]

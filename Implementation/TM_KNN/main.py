@@ -5,12 +5,10 @@ import templateMatch
 import videoStream
 
 #################################
-# Testning på bara en frame
+#   Testning på bara en frame   #
 #################################
-img = cv.imread(r'photos\new\yellow\WIN_20230516_15_39_09_Pro.jpg')
-
+img = cv.imread(r'WIN_20230517_14_49_10_Pro.jpg')
 procImg = card.process(img)
-
 cv.imshow('a',procImg)
 cv.waitKey(0)
 matchedCard = templateMatch.match(procImg)
