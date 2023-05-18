@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import cv2 as cv
 import time
-import knn
+from YOLOv5_UNO import knn
 
 class ObjectDetection:
 
@@ -15,7 +15,7 @@ class ObjectDetection:
         
     
     def load_model(self):
-        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5 UNO\runs\train\yolo_uno_det_low_v2\weights\best.pt')
+        model = torch.hub.load('ultralytics/yolov5', 'custom', path=r'YOLOv5_UNO/runs/train/yolo_uno_det_low_v2/weights/best.pt')
         return model
     
     def score_frame(self, frame):
@@ -40,8 +40,8 @@ class ObjectDetection:
                 bgr = (0, 255, 0)
                 cv.rectangle(frame, (x1,y1), (x2,y2), bgr, 2)
                 cropped_image = frame[y1:y2, x1:x2]
-                cv.imshow('cr', cropped_image)
-                cv.waitKey(0)
+                #cv.imshow('cr', cropped_image)
+                #cv.waitKey(0)
                 color = knn.getColor(cropped_image)
                 cv.putText(frame, color + ' ' + self.class_to_label(labels[i]), (x1, y1), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
                 
@@ -86,6 +86,3 @@ def process_image(path):
 
 #process_image(r'C:\UNO Synthetic Generator\Untitled.png')
 #cv.waitKey(0)
-
-detection = ObjectDetection()
-detection()
