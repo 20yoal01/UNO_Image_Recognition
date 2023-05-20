@@ -9,14 +9,14 @@ UNO_CARDS_PATH = 'Training UNO/Photos V2/'
 OUTPUT = 'Training UNO/UNO Syn/images'
 LABEL_PATH = 'Training UNO/UNO Syn/labels'
 #'Training UNO/solid background'
-BACKGROUND_PATH = 'Training UNO/background'
+BACKGROUND_PATH = 'Training UNO/solid background'
 CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 
 # IMAGES_PER_CARD = 200
 # TOTAL_CARDS_TO_GENERATE = 56
 
 
-IMAGES_PER_CARD = 660
+IMAGES_PER_CARD = 100
 TOTAL_CARDS_TO_GENERATE = 56
 
 # DEFAULT
@@ -32,7 +32,7 @@ TOTAL_CARDS_TO_GENERATE = 56
 TARGET_HEIGHT, TARGET_WIDTH = (720, 1280)
 ROTATE_RANGE = [-180, 180]
 TRANSLATE_RANGE = [(TARGET_WIDTH//2) * 0.10, (TARGET_HEIGHT//2) * 0.10]
-PROJECTION_RANGE = (-0.5, 0.5)
+PROJECTION_RANGE = (-0.6, 0.6)
 SATURATION_RANGE = (0.5, 2.0)
 VALUE_RANGE = (0.5, 1.5)
 SCALE_RANGE = (0.025, 0.075)
@@ -123,9 +123,9 @@ else:
 
 
 DATASPLIT = {
-    'Train': 0.7,
-    'Validation': 0.15,
-    'Test': 0.15
+    'Train': 0.8,
+    'Validation': 0.10,
+    'Test': 0.10
 }
 
 
@@ -200,8 +200,8 @@ def extract_uno(img):
     grey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     blur = cv.GaussianBlur(grey, (5, 5), cv.BORDER_DEFAULT)
 
-    t_lower = 0  # Lower Threshold
-    t_upper = 255  # Upper threshold
+    t_lower = 100  # Lower Threshold
+    t_upper = 200  # Upper threshold
     aperture_size = 3  # Aperture size
 
     canny = cv.Canny(blur, t_lower, t_upper, apertureSize=aperture_size)
