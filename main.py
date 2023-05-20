@@ -7,6 +7,7 @@ print('2: Template Matching with KNN')
 print('3: CNN with Color')
 print('4: CNN with KNN')
 
+#
 value = None
 
 while True:
