@@ -1,5 +1,5 @@
-import YOLOv5_UNO.detect as detect
-
+import YOLOv5_UNO.detect_CNN_KNN as detect_CNN_KNN
+import YOLOv5_UNO.detect_CNN as detect_CNN
 
 print('UNO Card Detector press one of these numbers to start!')
 print('1: Template Matching with Color')
@@ -24,5 +24,9 @@ while True:
        
 match(value):
     case 1:
-        detection = detect.ObjectDetection()
+        detection = detect_CNN_KNN.ObjectDetection()
+        detection()
+    case 2:
+        detection = detect_CNN.ObjectDetection()
+        
         detection()
