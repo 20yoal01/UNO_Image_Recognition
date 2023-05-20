@@ -1,0 +1,23 @@
+train: C:/yolov5/data/UNO_Synthetic_Dataset/images/Train
+val: C:/yolov5/data/UNO_Synthetic_Dataset/images/Validation
+test: C:/yolov5/data/UNO_Synthetic_Dataset/images/Test
+
+# class names
+names:
+  0: zero
+  1: one
+  2: two
+  3: three
+  4: four
+  5: five
+  6: six
+  7: seven
+  8: eight
+  9: nine
+  10: d2
+  11: r
+  12: s
+  13: d4
+  14: wild_card
+  15: wild_custom
+  16: wild_shuffle
