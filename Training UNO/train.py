@@ -8,14 +8,15 @@ import math
 UNO_CARDS_PATH = 'Training UNO/Photos V2/'
 OUTPUT = 'Training UNO/UNO Syn/images'
 LABEL_PATH = 'Training UNO/UNO Syn/labels'
-BACKGROUND_PATH = 'Training UNO/solid background'
+#'Training UNO/solid background'
+BACKGROUND_PATH = 'Training UNO/background'
 CARD_TYPE = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'WILD']
 
 # IMAGES_PER_CARD = 200
 # TOTAL_CARDS_TO_GENERATE = 56
 
 
-IMAGES_PER_CARD = 10
+IMAGES_PER_CARD = 660
 TOTAL_CARDS_TO_GENERATE = 56
 
 # DEFAULT
@@ -29,11 +30,11 @@ TOTAL_CARDS_TO_GENERATE = 56
 
 
 TARGET_HEIGHT, TARGET_WIDTH = (720, 1280)
-ROTATE_RANGE = [-90, 90]
+ROTATE_RANGE = [-180, 180]
 TRANSLATE_RANGE = [(TARGET_WIDTH//2) * 0.10, (TARGET_HEIGHT//2) * 0.10]
-PROJECTION_RANGE = (-0.1, 0.10)
-SATURATION_RANGE = (0, 100)
-VALUE_RANGE = (-30, 255)
+PROJECTION_RANGE = (-0.5, 0.5)
+SATURATION_RANGE = (0.5, 2.0)
+VALUE_RANGE = (0.5, 1.5)
 SCALE_RANGE = (0.025, 0.075)
 
 USE_COLORED_CARDS = True
@@ -183,18 +184,16 @@ def projectiveTransform(img, angle, translation=(0, 0), projective=(0, 0), rotPo
 
 
 def changeHSV(img, saturation, value):
-    changeImg = img.copy()
-    changeImg = cv.cvtColor(changeImg, cv.COLOR_BGR2HSV).astype("float32")
-    h, s, v = cv.split(changeImg)
-    lim = 255 - value
-    v[v > lim] = 255
-    v[v <= lim] += value
-    lim = 255 - saturation
-    s[s > lim] = 255
-    s[s <= lim] += saturation
-    changeImg = cv.merge([h, s, v])
-    changeImg = cv.cvtColor(changeImg.astype("uint8"), cv.COLOR_HSV2BGR)
-    return changeImg
+    hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    hsv = np.array(hsv, dtype = np.float64)
+    hsv[:,:,1] = hsv[:,:,1]*saturation
+    hsv[:,:,1][hsv[:,:,1]>255]  = 255
+    hsv[:,:,2] = hsv[:,:,2]*value 
+    hsv[:,:,2][hsv[:,:,2]>255]  = 255
+    hsv = np.array(hsv, dtype = np.uint8)
+    img = cv.cvtColor(hsv, cv.COLOR_HSV2BGR)
+    return img
+
 
 
 def extract_uno(img):
