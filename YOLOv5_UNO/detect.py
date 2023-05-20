@@ -42,8 +42,14 @@ class ObjectDetection:
                 cropped_image = frame[y1:y2, x1:x2]
                 #cv.imshow('cr', cropped_image)
                 #cv.waitKey(0)
-                color = knn.getColor(cropped_image)
-                cv.putText(frame, color + ' ' + self.class_to_label(labels[i]), (x1, y1), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
+                
+                print(self.class_to_label(labels[i])[0:4])
+                if (self.class_to_label(labels[i]))[0:4] != 'wild' and (self.class_to_label(labels[i]))[0:2] !='d4':
+                    color = knn.getColor(cropped_image)
+                    cardName = color + ' ' + self.class_to_label(labels[i])
+                else:
+                    cardName = self.class_to_label(labels[i])
+                cv.putText(frame, cardName, (x1, y1), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
                 
         return frame
     

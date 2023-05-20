@@ -2,7 +2,7 @@ from mpl_toolkits import mplot3d
 import numpy as np
 import matplotlib.pyplot as plt
 
-PATH = 'Implementation/KNN generator/new_in/'
+PATH = 'KNN generator/points/'
 
 blue = np.loadtxt(PATH + 'blue_bgr.csv', delimiter=",", dtype=int)
 green = np.loadtxt(PATH + 'green_bgr.csv', delimiter=",", dtype=int)

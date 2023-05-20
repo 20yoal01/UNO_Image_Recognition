@@ -7,24 +7,21 @@ import random
 LOWER_THRESHOLD = 100
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 5
-UNO_TYPE = 'wild'
-UNO_CARD_PATH = 'Training UNO/Photos V2/' + UNO_TYPE + '/'
-SATURATION_RANGE = (0, 30)
-VALUE_RANGE = (0, 40)
+UNO_TYPE = 'yellow'
+UNO_CARD_PATH = 'KNN generator/new/' + UNO_TYPE + '/'
+SATURATION_RANGE = (0.5, 2.0)
+VALUE_RANGE = (0.5, 1.5)
 
 def changeHSV(img, saturation, value):
-    changeImg = img.copy()
-    changeImg = cv.cvtColor(changeImg, cv.COLOR_BGR2HSV).astype("float32")
-    h,s,v = cv.split(changeImg)
-    lim = 255 - value 
-    v[v > lim] = 255 
-    v[v <= lim] += value
-    lim = 255 - saturation 
-    s[s > lim] = 255 
-    s[s <= lim] += saturation
-    changeImg = cv.merge([h,s,v])
-    changeImg = cv.cvtColor(changeImg.astype("uint8"), cv.COLOR_HSV2BGR)
-    return changeImg
+    hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    hsv = np.array(hsv, dtype = np.float64)
+    hsv[:,:,1] = hsv[:,:,1]*saturation
+    hsv[:,:,1][hsv[:,:,1]>255]  = 255
+    hsv[:,:,2] = hsv[:,:,2]*value 
+    hsv[:,:,2][hsv[:,:,2]>255]  = 255
+    hsv = np.array(hsv, dtype = np.uint8)
+    img = cv.cvtColor(hsv, cv.COLOR_HSV2BGR)
+    return img
 
 file_dir = os.listdir(UNO_CARD_PATH)
 loop_range = int(200/len(file_dir))
