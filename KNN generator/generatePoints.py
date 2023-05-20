@@ -8,7 +8,7 @@ LOWER_THRESHOLD = 100
 UPPER_THRESHOLD = 255
 APERTURE_SIZE = 5
 UNO_TYPE = 'wild'
-UNO_CARD_PATH = 'photos/new/' + UNO_TYPE + '/'
+UNO_CARD_PATH = 'Training UNO/Photos V2/' + UNO_TYPE + '/'
 SATURATION_RANGE = (0, 30)
 VALUE_RANGE = (0, 40)
 
@@ -89,4 +89,4 @@ for file in file_dir:
         color_array.append([str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
 
 arr = np.array(color_array)
-np.savetxt('Implementation/KNN generator/new_in_v2/new_' + UNO_TYPE + '_bgr.csv', arr, fmt="%s", delimiter=",")
+np.savetxt('KNN generator/points/new_' + UNO_TYPE + '_bgr.csv', arr, fmt="%s", delimiter=",")
