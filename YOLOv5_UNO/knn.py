@@ -20,9 +20,9 @@ def getColor(qImg):
     #3: wild
     #4: yellow
 
-    print( "result:  {}\n".format(results) )
-    print( "neighbours:  {}\n".format(neighbours) )
-    print( "distance:  {}\n".format(dist) )
-
-    print(int(results))
+    #print( "result:  {}\n".format(results) )
+    #print( "neighbours:  {}\n".format(neighbours) )
+    #print( "distance:  {}\n".format(dist) )
+#
+    #print(int(results))
     return COLORS[int(results)]

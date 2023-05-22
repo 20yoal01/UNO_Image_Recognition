@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import cv2 as cv
 import time
-from YOLOv5_UNO import knn
+from TM_KNN import knn
 
 class ObjectDetection:
 
@@ -72,6 +72,40 @@ class ObjectDetection:
             
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
+            
+    def measure(self, path):
+        cap = cv.VideoCapture(path)
+        video_lengh = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
+        time_list = []
+        
+        frameCount = 0
+        
+        if (cap.isOpened()== False):
+            print("Error opening video stream or file")
+        
+        print(video_lengh)
+        
+        for i in range(video_lengh):
+            
+            start_time = time.perf_counter()
+            ret, frame = cap.read()
+            if not ret:
+                break
+            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            results = self.score_frame(gray)
+            frame = self.plot_boxes(results, frame)
+            end_time = time.perf_counter()
+            time_ms = round(((end_time - start_time) / 1000), 5)
+            time_list.append(time_ms)
+            fps = 1 / np.round(end_time - start_time, 3)
+            #cv.putText(frame, f'FPS: {int(fps)}', (20, 70), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
+            #cv.imshow("img", frame)
+            
+            if cv.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        average_time = sum(time_list) / len(time_list)
+        print(average_time)
 
 def resize(img, scale_percent=.05):
     width = int(img.shape[1] * scale_percent)

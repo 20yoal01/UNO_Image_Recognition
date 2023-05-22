@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
-import knn
+import TM_KNN.knn as knn
 
 
 

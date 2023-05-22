@@ -1,5 +1,7 @@
 import YOLOv5_UNO.detect_CNN_KNN as detect_CNN_KNN
 import YOLOv5_UNO.detect_CNN as detect_CNN
+import TM.videoStream as videoStream_TM
+import TM_KNN.videoStream as videoStream_TM_KNN
 import threading
 
 print('UNO Card Detector press one of these numbers to start!')
@@ -25,17 +27,14 @@ while True:
        
 match(value):
     case 1:
-        detection = detect_CNN_KNN.ObjectDetection()
+        detection = videoStream_TM.videoStream()
         detection()
     case 2:
-        detection = detect_CNN.ObjectDetection()
+        detection = videoStream_TM_KNN.videoStream()
         detection()
     case 3:
-           detection_CNN = detect_CNN_KNN.ObjectDetection()
-           detection_KNN = detect_CNN.ObjectDetection()
-           t1 = threading.Thread(target=detection_CNN)
-           t2 = threading.Thread(target=detection_KNN)
-           t1.start()
-           t2.start()
-           t1.join()
-           t2.join()
+        detection = detect_CNN.ObjectDetection()
+        detection()
+    case 4:
+        detection = detect_CNN_KNN.ObjectDetection()
+        detection()

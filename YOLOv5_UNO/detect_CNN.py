@@ -9,7 +9,7 @@ class ObjectDetection:
         self.model = self.load_model()
         self.classes = self.model.names
         # self.device = 'cuda' if torch.cuda.is_available else 'cpu'
-        self.device = 'cuda'
+        self.device = 'cpu'
         print('\n\nDevice Used: ', self.device)
         
     
@@ -51,8 +51,8 @@ class ObjectDetection:
             ret, frame = cap.read()
             if not ret:
                 break
-            rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-            results = self.score_frame(rgb)
+            #rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            results = self.score_frame(frame)
             frame = self.plot_boxes(results, frame)
             end_time = time.perf_counter()
             fps = 1 / np.round(end_time - start_time, 3)
@@ -61,7 +61,40 @@ class ObjectDetection:
             
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
+    
+    def measure(self, path):
+        cap = cv.VideoCapture(path)
+        video_lengh = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
+        time_list = []
+        
+        frameCount = 0
+        
+        if (cap.isOpened()== False):
+            print("Error opening video stream or file")
+        
+        print(video_lengh)
+        
+        for i in range(video_lengh):
+            
+            start_time = time.perf_counter()
+            ret, frame = cap.read()
+            if not ret:
+                break
+            results = self.score_frame(frame)
+            frame = self.plot_boxes(results, frame)
+            end_time = time.perf_counter()
+            time_ms = round(((end_time - start_time) / 1000), 5)
+            time_list.append(time_ms)
+            fps = 1 / np.round(end_time - start_time, 3)
+            #cv.putText(frame, f'FPS: {int(fps)}', (20, 70), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
+            #cv.imshow("img", frame)
+            
+            if cv.waitKey(1) & 0xFF == ord('q'):
+                break
 
+        average_time = sum(time_list) / len(time_list)
+        print(average_time)
+    
 def resize(img, scale_percent=.05):
     width = int(img.shape[1] * scale_percent)
     height = int(img.shape[0] * scale_percent)
