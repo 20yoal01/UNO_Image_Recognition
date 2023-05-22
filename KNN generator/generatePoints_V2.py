@@ -7,10 +7,10 @@ import random
 LOWER_THRESHOLD = 100
 UPPER_THRESHOLD = 200
 APERTURE_SIZE = 3
-UNO_TYPE = 'wild'
+UNO_TYPE = 'blue'
 UNO_CARD_PATH = 'Training UNO/Photos V2/' + UNO_TYPE + '/'
-SATURATION_RANGE = (0.9, 1.1)
-VALUE_RANGE = (0.9, 1.1)
+SATURATION_RANGE = (0.7, 1.5)
+VALUE_RANGE = (0.7, 1.5)
 
 
 def changeHSV(img, saturation, value):

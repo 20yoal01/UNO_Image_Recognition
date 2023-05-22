@@ -9,8 +9,8 @@ UPPER_THRESHOLD = 255
 APERTURE_SIZE = 5
 UNO_TYPE = 'yellow'
 UNO_CARD_PATH = 'KNN generator/new/' + UNO_TYPE + '/'
-SATURATION_RANGE = (0.5, 2.0)
-VALUE_RANGE = (0.5, 1.5)
+SATURATION_RANGE = (0.6, 1.5)
+VALUE_RANGE = (0.6, 1.5)
 
 def changeHSV(img, saturation, value):
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
