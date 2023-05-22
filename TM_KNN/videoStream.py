@@ -2,6 +2,7 @@ import cv2 as cv
 import numpy as np
 import card
 import templateMatch
+import time
 
 def resize(img, scale_percent=.5):
     y,x,c = img.shape
@@ -10,20 +11,33 @@ def resize(img, scale_percent=.5):
 cap = cv.VideoCapture(0)
 if (cap.isOpened()== False):
     print("Error opening video stream or file")
-
+frameCount = 0
 while(cap.isOpened()): 
     #ret är return värdet och kommer retunera true om framen har laddats korrekt
+    start_time = time.perf_counter()
     ret, frame = cap.read()
     if ret == True:
         #frame = resize(frame)
         #Visar en frame av videon och visar denna i 25ms 
-        cv.imshow('Frame', frame)
-        procImg = card.process(frame)
-        for pic in procImg:
-            cv.imshow('a',pic)
-            cv.waitKey(0)
-            matchedCard = templateMatch.match(pic)
-        if cv.waitKey(25) & 0xFF == ord('q'):
+        frameCount += 1
+        if frameCount > 0:
+            #frameCount = 0
+            #cv.imshow('Frame', frame)
+            procImg, pts  = card.process(frame)
+            for i in range(len(procImg)):
+                #cv.imshow('a',procImg[i])
+                matchedCard, match_found = templateMatch.match(procImg[i])
+                if pts and match_found:
+                    rect = cv.minAreaRect(pts[i])
+                    box = cv.boxPoints(rect)
+                    box = np.int0(box)
+                    frame = cv.drawContours(frame,[box],0,(0,255,255),2)
+                    frame = cv.putText(frame,matchedCard,[box[0][0],box[0][1]-10], cv.FONT_HERSHEY_PLAIN,1,(0,0,255),2)
+            end_time = time.perf_counter()
+            fps = 1 / np.round(end_time - start_time, 3)
+            cv.putText(frame, f'FPS: {int(fps)}', (20, 70), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
+            cv.imshow('Frame', frame)
+        if cv.waitKey(1) & 0xFF == ord('q'):
             break
     else:
         break
