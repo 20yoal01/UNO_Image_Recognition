@@ -63,7 +63,6 @@ def match(img):
     thresh_level = int(bkg_level[0]) + BKG_THRESH
     ret, thresh_qCard = cv.threshold(qImg_gray, thresh_level, 255, cv.THRESH_BINARY_INV)
     cv.imshow('hej', thresh_qCard)
-    cv.waitKey(0)
     bin_diff = []
 
     index = 0
@@ -82,5 +81,4 @@ def match(img):
     print(bin_diff)
     print(file_dir)
     print(match)
-    cv.waitKey(0)
     return match
