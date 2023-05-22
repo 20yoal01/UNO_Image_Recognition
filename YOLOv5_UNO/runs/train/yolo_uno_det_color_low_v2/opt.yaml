@@ -1,5 +1,5 @@
-weights: ' '
-cfg: C:\yolov5\models\yolov5s.yaml
+weights: runs\train\yolo_uno_det_color_low_v2\weights\last.pt
+cfg: ''
 data: C:\yolov5\data\uno_cards_color.yaml
 hyp:
   lr0: 0.01
@@ -34,7 +34,7 @@ epochs: 100
 batch_size: 32
 imgsz: 640
 rect: false
-resume: false
+resume: true
 nosave: false
 noval: false
 noautoanchor: false

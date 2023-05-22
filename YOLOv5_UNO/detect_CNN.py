@@ -9,7 +9,7 @@ class ObjectDetection:
         self.model = self.load_model()
         self.classes = self.model.names
         # self.device = 'cuda' if torch.cuda.is_available else 'cpu'
-        self.device = 'cpu'
+        self.device = 'cuda'
         print('\n\nDevice Used: ', self.device)
         
     
@@ -57,7 +57,7 @@ class ObjectDetection:
             end_time = time.perf_counter()
             fps = 1 / np.round(end_time - start_time, 3)
             cv.putText(frame, f'FPS: {int(fps)}', (20, 70), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
-            cv.imshow("img", frame)
+            cv.imshow("CNN", frame)
             
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
