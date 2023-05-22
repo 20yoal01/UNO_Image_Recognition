@@ -8,6 +8,7 @@ TEMPLATE_HIGHT = 349
 LOWER_THRESHOLD = 50
 UPPER_THRESHOLD = 210
 APERTURE_SIZE = 5
+BKG_THRESH = 20
 
 # CNN + KNN // Integrera delarna tillsammans
 # TM + KNN  // Preprocessing
@@ -23,9 +24,6 @@ def extract_points(img, mask):
         x,y = i.ravel()
         cv.circle(img,(int(x),int(y)),3,(0,0,255),-1)
 
-    cv.imshow('img', img)
-    cv.waitKey(0)
-
     c = corners.sum(axis=2)
     cd = np.diff(corners,axis=2)
 
@@ -40,6 +38,21 @@ def extract_points(img, mask):
     botLeft = (bl[0][0], bl[0][1])
     pts = np.array([topLeft,topRight,botRight,botLeft])
     return pts
+
+def order_points(pts):
+    c = pts.sum(axis=1)
+    cd = np.diff(pts,axis=1)
+
+    tl = pts[np.argmin(c)]
+    br = pts[np.argmax(c)]
+    tr = pts[np.argmin(cd)]
+    bl = pts[np.argmax(cd)]
+
+    topLeft = (tl[0], tl[1])
+    topRight = (tr[0], tr[1])
+    botRight = (br[0], br[1])
+    botLeft = (bl[0], bl[1])
+    return topLeft,topRight,botRight,botLeft
 
 def extract_four_points(img, cnt):
     img_controll = img.copy()
@@ -71,6 +84,8 @@ def extract_four_points(img, cnt):
             same_y_br.append(point[0])
     same_y_br.sort(key=lambda point: point[0], reverse=True)
     br = same_y_br[0]
+    arr = np.array((bl,tr,tl,br))
+    tl,tr,br,bl = order_points(arr)
     width = np.sqrt((tl[0]-tr[0]) **2 + (tl[1]-tr[1]) **2)
     hight = np.sqrt((tr[0]-br[0]) **2 + (tr[1]-br[1]) **2)
     if(width < hight):
@@ -87,8 +102,6 @@ def extract_four_points(img, cnt):
     cv.circle(img_controll, topRight, 8, (0, 255, 0), -1)
     cv.circle(img_controll, topLeft, 8, (255, 0, 0), -1)
     cv.circle(img_controll, botRight, 8, (255, 255, 0), -1)
-    cv.imshow('test', img_controll)
-    cv.waitKey(0)
     pts = np.array([topLeft,topRight,botRight,botLeft]).astype(np.float32)
     return pts
 
@@ -103,7 +116,7 @@ def four_point_transform(image, cnt):
         [0, maxHeight - 1]], dtype="float32")
     M = cv.getPerspectiveTransform(pts, dst)
     warped = cv.warpPerspective(image, M, (maxWidth, maxHeight))
-    return warped
+    return warped,pts
 
 def process(img):
     processed = img.copy()
@@ -111,20 +124,20 @@ def process(img):
     scale_x = IMG_WIDTH/img_w
     scale_y = IMG_HIGHT/img_h
 
-    processed = cv.resize(processed, None, fx=scale_x, fy=scale_y, interpolation=cv.INTER_AREA)
-    print(processed.shape)
+    #processed = cv.resize(processed, None, fx=scale_x, fy=scale_y, interpolation=cv.INTER_AREA)
     gray = cv.cvtColor(processed, cv.COLOR_BGR2GRAY)
     blur = cv.medianBlur(gray, 11)
-    blur = cv.bilateralFilter(blur, 9, 130, 130)
+    blur = cv.bilateralFilter(blur, 11, 150, 150)
+    
     mean_value = np.mean(blur)
     lower_threshold = int(max(0, mean_value - 2 * np.std(blur)))
     upper_threshold = int(min(255, mean_value + 2 * np.std(blur)))
     canny = cv.Canny(blur, lower_threshold, upper_threshold, apertureSize=APERTURE_SIZE)
-    karnel = np.ones((5,5), np.uint8)
+    karnel = np.ones((3,3), np.uint8)
     canny = cv.dilate(canny, karnel,iterations=1)
-    cv.imshow('canny', canny)
-    cv.waitKey(0)
-    ret, threshold = cv.threshold(canny, 125, 255, cv.THRESH_BINARY)
+    bkg_level = cv.mean(gray)[:3]
+    thresh_level = int(bkg_level[0]) + BKG_THRESH
+    ret, threshold = cv.threshold(canny, thresh_level, 255, cv.THRESH_BINARY)
     contours, hier = cv.findContours(threshold, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     
     mask = np.zeros(shape=processed.shape[:2], dtype=np.uint8)
@@ -136,6 +149,7 @@ def process(img):
     cards = []
 
     contour_is_card = np.zeros(len(contours), dtype=int)
+
     
     for i in index_sort:
         cnt_sorted.append(contours[i])
@@ -143,21 +157,19 @@ def process(img):
     
     for i in range(len(contours)):
         size = cv.contourArea(cnt_sorted[i])
-        peri = cv.arcLength(cnt_sorted[i],True)
-        approx = cv.approxPolyDP(cnt_sorted[i],0.02*peri,True)
-        if((size < 120_000) and (size > 0) and (hier_sorted[i][3] == -1) and (len(approx) == 4)):
+        if((size < 120_000_000) and (size > 1_200) and (hier_sorted[i][3] == -1)):
             contour_is_card[i] = 1
 
     blank = np.zeros(shape=processed.shape, dtype='uint8')
     blank[:] = (0, 0, 0)
+    pts_list = []
 
     for i in range(len(cnt_sorted)):
         if (contour_is_card[i] == 1):
             cv.drawContours(mask, [cnt_sorted[i]], -1, (255,225,225), -1)
             mask = cv.erode(mask, None, iterations=2)
-            cv.imshow('mask', mask)
-            cv.waitKey(0)
-            cv.copyTo(processed,mask,blank)
-            cards.append(four_point_transform(blank, cnt_sorted[i]))
+            card, pts = four_point_transform(processed, cnt_sorted[i])
+            cards.append(card)
+            pts_list.append(cnt_sorted[i])
 
-    return cards[0]
+    return cards, pts_list

@@ -2,35 +2,11 @@ import cv2 as cv
 import numpy as np
 import os
 
-COLOR_MAP_PATH = 'Templates/Color/'
-COLOR_TEMPLATES_PATH = ['blue_one', 'red_one', 'green_one', 'yellow_one', 'wild_wild_card', 'wild_wild_custom', 'wild_d4', 'wild_wild_shuffle']
-COLORS = ['blue', 'red', 'green', 'yellow', 'wild', 'wild', 'wild', 'wild']
-BIN_TEMPLATES_PATH = 'Templates/Bin_v2/'
-
-def threshold_uno_card(image):
-    # Convert image to HSV color space
-    hsv_image = cv.cvtColor(image, cv.COLOR_BGR2HSV)
-
-    # Define color ranges for UNO card symbols (red, green, blue, yellow)
-    color_ranges = [
-        ((0, 70, 50), (10, 255, 255)),        # Red (lower range)
-        ((160, 70, 50), (180, 255, 255)),     # Red (upper range)
-        ((40, 70, 50), (80, 255, 255)),       # Green
-        ((100, 70, 50), (130, 255, 255)),     # Blue
-        ((20, 70, 50), (35, 255, 255))        # Yellow
-    ]
-    # Apply color thresholding for each color range
-    thresholded_images = []
-    for (lower, upper) in color_ranges:
-        lower = np.array(lower, dtype=np.uint8)
-        upper = np.array(upper, dtype=np.uint8)
-        mask = cv.inRange(hsv_image, lower, upper)
-        thresholded_images.append(mask)
-
-    # Combine the thresholded images to get the final result
-    result = sum(thresholded_images)
-
-    return result
+COLOR_MAP_PATH = 'TM/Color/'
+COLOR_TEMPLATES_PATH = ['blue_one', 'red_one', 'green_one', 'yellow_one', 'wild_wild_card', 'wild_wild_custom', 'wild_d4', 'wild_wild_shuffle', 'wild_wild_card_u', 'wild_d4_u','wild_wild_shuffle_u']
+COLORS = ['blue', 'red', 'green', 'yellow', 'wild', 'wild', 'wild', 'wild', 'wild', 'wild', 'wild']
+BIN_TEMPLATES_PATH = 'TM/Bin_v2/'
+BKG_THRESH = 20 
 
 def match(img):
     color_templates = []
@@ -48,43 +24,31 @@ def match(img):
 
     best_match_color = COLORS[np.argmin(color_diff)]
 
-    bin_path = BIN_TEMPLATES_PATH
-    
-    #if best_match_color != 'yellow':
-    #    file_dir = os.listdir(BIN_TEMPLATES_PATH)    
-    #else:
-    #    bin_path += 'yellow/'
-    #    file_dir = os.listdir(BIN_TEMPLATES_PATH + 'yellow')
-
     file_dir = os.listdir(BIN_TEMPLATES_PATH)
-
     for file in file_dir: 
         if file != 'yellow':
-            temp = cv.imread(bin_path + file, cv.IMREAD_GRAYSCALE)
+            temp = cv.imread(BIN_TEMPLATES_PATH + file, cv.IMREAD_GRAYSCALE)
             ret, thresh = cv.threshold(temp, 127, 255, cv.THRESH_BINARY)
             bin_templates.append(thresh)
 
-    #qImg_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    #ret, thresh_qCard = cv.threshold(qImg_gray, 127, 255, cv.THRESH_BINARY_INV)
-    thresh_qCard = threshold_uno_card(img)
-    
+    qImg_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    bkg_level = cv.mean(qImg_gray)[:3]
+    thresh_level = int(bkg_level[0]) + BKG_THRESH
+    ret, thresh_qCard = cv.threshold(qImg_gray, thresh_level, 255, cv.THRESH_BINARY_INV)
+    #cv.imshow('hej', thresh_qCard)
     bin_diff = []
 
     index = 0
-
     for tempalte_bin in bin_templates: 
         temp_diff = cv.absdiff(thresh_qCard,tempalte_bin)
-        #cv.imshow(str(index),temp_diff)
         index += 1
         bin_diff.append(int(np.sum(temp_diff)/255))
 
-    print('diff')
-    print(np.argmax(bin_diff))
+    diff_num = bin_diff[np.argmax(bin_diff)]
+    if (diff_num < 52_000):
+        return 'unknown symbol', False
     best_match_symbol = file_dir[np.argmax(bin_diff)]
 
     match = best_match_color + ' ' + str(best_match_symbol[0:len(best_match_symbol)-4])
-    print(bin_diff)
-    print(file_dir)
-    #print(match)
-    cv.waitKey(0)
-    return match
+    print(match)
+    return match, True
