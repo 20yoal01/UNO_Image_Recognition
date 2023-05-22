@@ -145,8 +145,9 @@ def process(img):
         size = cv.contourArea(cnt_sorted[i])
         peri = cv.arcLength(cnt_sorted[i],True)
         approx = cv.approxPolyDP(cnt_sorted[i],0.02*peri,True)
-        if((size < 120_000) and (size > 0) and (hier_sorted[i][3] == -1) and (len(approx) == 4)):
+        if((size < 120_000) and (size > 1_000) and (hier_sorted[i][3] == -1) and (len(approx) == 4)):
             contour_is_card[i] = 1
+            print(size + contour_is_card[i])
 
     blank = np.zeros(shape=processed.shape, dtype='uint8')
     blank[:] = (0, 0, 0)
@@ -157,7 +158,6 @@ def process(img):
             mask = cv.erode(mask, None, iterations=2)
             cv.imshow('mask', mask)
             cv.waitKey(0)
-            cv.copyTo(processed,mask,blank)
-            cards.append(four_point_transform(blank, cnt_sorted[i]))
+            cards.append(four_point_transform(processed, cnt_sorted[i]))
 
     return cards[0]
