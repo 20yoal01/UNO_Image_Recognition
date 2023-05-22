@@ -83,7 +83,7 @@ def process(img):
     
     cv.drawContours(mask, contours, -1, (255,255,255), thickness=cv.FILLED)
     
-    #cv.imshow('a',mask)
+    cv.imshow('a',mask)
     cv.waitKey(0)
     
     for i in index_sort:
@@ -103,9 +103,6 @@ def process(img):
     for i in range(len(cnt_sorted)):
         if (contour_is_card[i] == 1):
             cv.drawContours(blank, [cnt_sorted[i]], -1, (255,225,225), -1)
-            cv.copyTo(processed,blank,blank)
             cards.append(four_point_transform(blank, cnt_sorted[i]))
 
-    cv.copyTo(processed,blank,blank)
-
-    return cards[0]
+    return cards
