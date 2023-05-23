@@ -1,22 +1,34 @@
+import os
+import cv2 as cv
 import numpy as np
-width = np.sqrt((tl[0]-tr[0]) **2 + (tl[1]-tr[1]) **2)
-hight = np.sqrt((tr[0]-br[0]) **2 + (tr[1]-br[1]) **2)
 
-tl = (0,0)
+file_dir = os.listdir('validation bilder')
+result = []
+for file in file_dir:
+    print("Färg: ", file[:file.find('_')])
+    print("Kort: ", file[file.find('_')+1:len(file)-6])
+    print(' ')
+    
 
-pts = []
-
-for c in corners: 
-    euc = []
-    for cnt in contours: 
-        euc.append(np.sqrt((c[0]-cnt[0]) **2 + (c[1]-cnt[1]) **2))
-    pts.append(euc[np.argmin(euc)])
-
-for cnt in contours: 
-    euc = np.sqrt((corners[0][0]-cnt[0]) **2 + (tl[1]-tr[1]) **2)
+file_dir = os.listdir('TM_KNN/Bin_v2')
+print(file_dir)
+for file in file_dir:
+    if file.find('_upsidedown') != -1:
+        print("Kort med _: ", file[:file.find('_upsidedown')])
+    else: 
+        print("Kort utan: ",file[:len(file)-4])
+    print(" ")
 
 
-index_sort = sorted(range(len(contours)), key=lambda i : cv.contourArea(contours[i]), reverse=True)
-cnt_sorted = []
-for i in index_sort:
-    cnt_sorted.append(contours[i])
+#Finns det ett kort? Från cards
+#Vilken Färg, från template 
+#Vilken symbol, template
+#CSV: facit färg, facit symbol, finns kort (1/0), färg, symbol
+
+img = cv.imread(r'validation bilder\WIN_20230517_14_48_48_Pro.jpg')
+procImg = card.process(img)
+for pic in procImg:
+    cv.imshow('a',pic)
+    cv.waitKey(0)
+    matchedCard = templateMatch.match(pic)
+print(matchedCard)
