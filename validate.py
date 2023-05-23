@@ -54,7 +54,7 @@ while True:
        print ('Invalid range, please enter: 1-4')
   
 def time_measure():
-    detection.measure(r'C:\Users\eyoalxa\Documents\Python OpenCV\WIN_20230522_15_59_16_Pro.mp4')
+    detection.time_measure(r'C:\Users\eyoalxa\Documents\Python OpenCV\WIN_20230522_15_59_16_Pro.mp4')
     return None
 
 def precision_measure():
