@@ -97,9 +97,4 @@ class videoStream:
         print(average_time)
 
     def precision_measure(self):
-        file_dir = os.listdir('validation bilder')
-        result = []
-        for file in file_dir: 
-            
-
         return None
