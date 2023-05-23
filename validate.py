@@ -1,5 +1,5 @@
-import YOLOv5_UNO.detect_CNN_KNN as detect_CNN_KNN
-import YOLOv5_UNO.detect_CNN as detect_CNN
+import YOLOv5_UNO.CNN_KNN.detect_CNN_KNN as detect_CNN_KNN
+import YOLOv5_UNO.CNN.detect_CNN as detect_CNN
 import TM.videoStream as videoStream_TM
 import TM_KNN.videoStream as videoStream_TM_KNN
 import threading
@@ -54,7 +54,7 @@ while True:
        print ('Invalid range, please enter: 1-4')
   
 def time_measure():
-    detection.time_measure(r'C:\Users\eyoalxa\Documents\Python OpenCV\WIN_20230522_15_59_16_Pro.mp4')
+    detection.time_measure(r'WIN_20230522_15_59_16_Pro.mp4')
     return None
 
 def precision_measure():

@@ -1,0 +1,177 @@
+facit:['BLUE', 'd2'],prediction:,
+facit:['BLUE', 'd2'],prediction:,['blue', 'd2']
+facit:['BLUE', 'eight'],prediction:,['blue', 'eight']
+facit:['BLUE', 'eight'],prediction:,
+facit:['BLUE', 'five'],prediction:,['unknown', 'symbol']
+facit:['BLUE', 'five'],prediction:,['unknown', 'symbol']
+facit:['BLUE', 'five'],prediction:,
+facit:['BLUE', 'four'],prediction:,
+facit:['BLUE', 'four'],prediction:,['unknown', 'symbol']
+facit:['BLUE', 'four'],prediction:,['blue', 'four']
+facit:['BLUE', 'nine'],prediction:,['unknown', 'symbol']
+facit:['BLUE', 'nine'],prediction:,['blue', 'nine']
+facit:['BLUE', 'nine'],prediction:,
+facit:['BLUE', 'one'],prediction:,['unknown', 'symbol']
+facit:['BLUE', 'one'],prediction:,['blue', 'one']
+facit:['BLUE', 'one'],prediction:,
+facit:['BLUE', 'r'],prediction:,['blue', 'r']
+facit:['BLUE', 'r'],prediction:,['blue', 'r']
+facit:['BLUE', 'r'],prediction:,['blue', 'one']
+facit:['BLUE', 'seven'],prediction:,['blue', 'seven']
+facit:['BLUE', 'seven'],prediction:,['green', 'one']
+facit:['BLUE', 'seven'],prediction:,
+facit:['BLUE', 'six'],prediction:,
+facit:['BLUE', 'six'],prediction:,['blue', 'six']
+facit:['BLUE', 'six'],prediction:,
+facit:['BLUE', 's'],prediction:,['unknown', 'symbol']
+facit:['BLUE', 's'],prediction:,['unknown', 'symbol']
+facit:['BLUE', 's'],prediction:,
+facit:['BLUE', 'three'],prediction:,['blue', 'three']
+facit:['BLUE', 'three'],prediction:,['blue', 'three']
+facit:['BLUE', 'three'],prediction:,
+facit:['BLUE', 'two'],prediction:,['blue', 'four']
+facit:['BLUE', 'two'],prediction:,['blue', 'two']
+facit:['BLUE', 'two'],prediction:,
+facit:['BLUE', 'zero'],prediction:,['blue', 'one']
+facit:['BLUE', 'zero'],prediction:,['unknown', 'symbol']
+facit:['BLUE', 'zero'],prediction:,['blue', 'zero']
+facit:['d4', ''],prediction:,['d4']
+facit:['d4', ''],prediction:,
+facit:['d4', ''],prediction:,['d4']
+facit:['GREEN', 'd2'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'd2'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'd2'],prediction:,
+facit:['GREEN', 'eight'],prediction:,['blue', 'two']
+facit:['GREEN', 'eight'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'eight'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'five'],prediction:,['blue', 'six']
+facit:['GREEN', 'five'],prediction:,['blue', 'nine']
+facit:['GREEN', 'five'],prediction:,['blue', 'five']
+facit:['GREEN', 'four'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'four'],prediction:,['blue', 'four']
+facit:['GREEN', 'four'],prediction:,['blue', 'four']
+facit:['GREEN', 'nine'],prediction:,['blue', 'six']
+facit:['GREEN', 'nine'],prediction:,
+facit:['GREEN', 'nine'],prediction:,
+facit:['GREEN', 'one'],prediction:,['blue', 'one']
+facit:['GREEN', 'one'],prediction:,['blue', 'one']
+facit:['GREEN', 'one'],prediction:,['blue', 'one']
+facit:['GREEN', 'r'],prediction:,
+facit:['GREEN', 'r'],prediction:,['blue', 'r']
+facit:['GREEN', 'r'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'seven'],prediction:,['blue', 'seven']
+facit:['GREEN', 'seven'],prediction:,['green', 'seven']
+facit:['GREEN', 'seven'],prediction:,['blue', 'seven']
+facit:['GREEN', 'six'],prediction:,['blue', 'six']
+facit:['GREEN', 'six'],prediction:,
+facit:['GREEN', 'six'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 's'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 's'],prediction:,['blue', 's']
+facit:['GREEN', 's'],prediction:,
+facit:['GREEN', 'three'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'three'],prediction:,['blue', 'one']
+facit:['GREEN', 'three'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'two'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'two'],prediction:,['blue', 'two']
+facit:['GREEN', 'two'],prediction:,['blue', 'two']
+facit:['GREEN', 'zero'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'zero'],prediction:,['unknown', 'symbol']
+facit:['GREEN', 'zero'],prediction:,['blue', 'zero']
+facit:['noise', '('],prediction:,
+facit:['noise', '(1'],prediction:,
+facit:['noise', '(1'],prediction:,
+facit:['noise', '(1'],prediction:,['unknown', 'symbol']
+facit:['noise', '(1'],prediction:,
+facit:['noise', '(1'],prediction:,
+facit:['noise', '('],prediction:,
+facit:['noise', '('],prediction:,
+facit:['noise', '('],prediction:,
+facit:['noise', '('],prediction:,
+facit:['noise', '('],prediction:,
+facit:['noise', '('],prediction:,
+facit:['noise', '('],prediction:,
+facit:['noise', '('],prediction:,
+facit:['RED', 'd2'],prediction:,['unknown', 'symbol']
+facit:['RED', 'd2'],prediction:,['unknown', 'symbol']
+facit:['RED', 'd2'],prediction:,
+facit:['RED', 'eight'],prediction:,
+facit:['RED', 'eight'],prediction:,['blue', 'eight']
+facit:['RED', 'eight'],prediction:,['red', 'eight']
+facit:['RED', 'five'],prediction:,
+facit:['RED', 'five'],prediction:,['unknown', 'symbol']
+facit:['RED', 'five'],prediction:,['unknown', 'symbol']
+facit:['RED', 'four'],prediction:,['red', 'four']
+facit:['RED', 'four'],prediction:,['red', 'four']
+facit:['RED', 'four'],prediction:,['red', 'four']
+facit:['RED', 'nine'],prediction:,['red', 'nine']
+facit:['RED', 'nine'],prediction:,['unknown', 'symbol']
+facit:['RED', 'nine'],prediction:,['unknown', 'symbol']
+facit:['RED', 'one'],prediction:,['red', 'one']
+facit:['RED', 'one'],prediction:,['red', 'one']
+facit:['RED', 'one'],prediction:,['red', 'one']
+facit:['RED', 'r'],prediction:,['red', 'r']
+facit:['RED', 'r'],prediction:,['unknown', 'symbol']
+facit:['RED', 'r'],prediction:,['red', 'r']
+facit:['RED', 'seven'],prediction:,['red', 'one']
+facit:['RED', 'seven'],prediction:,['red', 'seven']
+facit:['RED', 'seven'],prediction:,['red', 'seven']
+facit:['RED', 'six'],prediction:,['red', 'six']
+facit:['RED', 'six'],prediction:,['unknown', 'symbol']
+facit:['RED', 'six'],prediction:,['red', 'six']
+facit:['RED', 's'],prediction:,['unknown', 'symbol']
+facit:['RED', 's'],prediction:,['unknown', 'symbol']
+facit:['RED', 's'],prediction:,['red', 's']
+facit:['RED', 'three'],prediction:,['red', 'six']
+facit:['RED', 'three'],prediction:,['blue', 'three']
+facit:['RED', 'three'],prediction:,['red', 'three']
+facit:['RED', 'two'],prediction:,
+facit:['RED', 'two'],prediction:,['unknown', 'symbol']
+facit:['RED', 'two'],prediction:,['red', 'two']
+facit:['RED', 'zero'],prediction:,['red', 'zero']
+facit:['RED', 'zero'],prediction:,['red', 'one']
+facit:['RED', 'zero'],prediction:,
+facit:['WILD', 'card'],prediction:,
+facit:['WILD', 'card'],prediction:,['wild', 'card']
+facit:['WILD', 'card'],prediction:,['unknown', 'symbol']
+facit:['WILD', 'card'],prediction:,['unknown', 'symbol']
+facit:['WILD', 'custom'],prediction:,
+facit:['WILD', 'custom'],prediction:,['blue', 'one']
+facit:['WILD', 'custom'],prediction:,
+facit:['WILD', 'shuffle'],prediction:,['unknown', 'symbol']
+facit:['WILD', 'shuffle'],prediction:,['unknown', 'symbol']
+facit:['WILD', 'shuffle'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'd2'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'd2'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'd2'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'eight'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'eight'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'eight'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'five'],prediction:,['green', 'seven']
+facit:['YELLOW', 'four'],prediction:,['green', 'one']
+facit:['YELLOW', 'four'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'four'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'nine'],prediction:,['green', 'one']
+facit:['YELLOW', 'nine'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'nine'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'one'],prediction:,
+facit:['YELLOW', 'one'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'one'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'r'],prediction:,['green', 'one']
+facit:['YELLOW', 'r'],prediction:,['green', 'one']
+facit:['YELLOW', 'r'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'seven'],prediction:,['green', 'one']
+facit:['YELLOW', 'seven'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'seven'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'six'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 's'],prediction:,['green', 'one']
+facit:['YELLOW', 's'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 's'],prediction:,
+facit:['YELLOW', 'three'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'three'],prediction:,['green', 'one']
+facit:['YELLOW', 'three'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'two'],prediction:,['green', 'one']
+facit:['YELLOW', 'two'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'two'],prediction:,
+facit:['YELLOW', 'zero'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'zero'],prediction:,['unknown', 'symbol']
+facit:['YELLOW', 'zero'],prediction:,['unknown', 'symbol']

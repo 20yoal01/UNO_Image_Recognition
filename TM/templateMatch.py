@@ -46,9 +46,23 @@ def match(img):
 
     diff_num = bin_diff[np.argmax(bin_diff)]
     if (diff_num < 52_000):
+        print('unknown symbol')
         return 'unknown symbol', False
     best_match_symbol = file_dir[np.argmax(bin_diff)]
 
-    match = best_match_color + ' ' + str(best_match_symbol[0:len(best_match_symbol)-4])
+    symbol = str(best_match_symbol[0:len(best_match_symbol)-4])
+    
+    wild_cards = ['wild_card', 'wild_custom', 'wild_shuffle', 'd4']
+    isWild = False
+    
+    for card in wild_cards:
+        if symbol == card:
+            isWild = True
+    
+    if isWild == False:
+        match = best_match_color + ' ' + str(best_match_symbol[0:len(best_match_symbol)-4])
+    else:
+        match = symbol.replace('_', ' ')
+        
     print(match)
     return match, True

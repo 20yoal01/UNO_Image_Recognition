@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
-import TM_KNN.knn as knn
+import knn
 
 
 
@@ -23,7 +23,7 @@ def match(img):
     bkg_level = cv.mean(qImg_gray)[:3]
     thresh_level = int(bkg_level[0]) + BKG_THRESH
     ret, thresh_qCard = cv.threshold(qImg_gray, thresh_level, 255, cv.THRESH_BINARY_INV)
-    cv.imshow('hej', thresh_qCard)
+    #cv.imshow('hej', thresh_qCard)
     bin_diff = []
 
     index = 0
@@ -37,6 +37,20 @@ def match(img):
         return 'unknown symbol', False
     best_match_symbol = file_dir[np.argmax(bin_diff)]
 
-    match = best_match_color + ' ' + str(best_match_symbol[0:len(best_match_symbol)-4])
+    symbol = str(best_match_symbol[0:len(best_match_symbol)-4])
+    
+    wild_cards = ['wild_card', 'wild_custom', 'wild_shuffle', 'd4']
+    isWild = False
+    
+    for card in wild_cards:
+        if symbol == card:
+            isWild = True
+    
+    if isWild == False:
+        match = best_match_color + ' ' + str(best_match_symbol[0:len(best_match_symbol)-4])
+    else:
+        match = symbol.replace('_', ' ')
+    
+    
     print(match)
     return match, True

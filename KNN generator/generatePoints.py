@@ -86,4 +86,4 @@ for file in file_dir:
         color_array.append([str(int(mean_color[0])),str(int(mean_color[1])),str(int(mean_color[2]))])
 
 arr = np.array(color_array)
-np.savetxt('KNN generator/points/new_' + UNO_TYPE + '_bgr.csv', arr, fmt="%s", delimiter=",")
+np.savetxt('KNN generator/test/new_' + UNO_TYPE + '_bgr.csv', arr, fmt="%s", delimiter=",")
