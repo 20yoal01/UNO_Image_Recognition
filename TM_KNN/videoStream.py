@@ -49,7 +49,7 @@ class videoStream:
         cap.release()
         cv.destroyAllWindows()
         
-    def measure(self, path):
+    def time_measure(self, path):
         cap = cv.VideoCapture(path)
         video_lengh = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
         time_list = []
@@ -94,3 +94,5 @@ class videoStream:
                 break
         average_time = sum(time_list) / len(time_list)
         print(average_time)
+
+    

@@ -73,7 +73,7 @@ class ObjectDetection:
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
             
-    def measure(self, path):
+    def time_measure(self, path):
         cap = cv.VideoCapture(path)
         video_lengh = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
         time_list = []

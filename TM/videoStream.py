@@ -3,6 +3,7 @@ import numpy as np
 import TM.card as card
 import TM.templateMatch as templateMatch
 import time
+import os
 
 class videoStream:
     def __init__(self):
@@ -49,7 +50,7 @@ class videoStream:
         cap.release()
         cv.destroyAllWindows()
         
-    def measure(self, path):
+    def time_measure(self, path):
         cap = cv.VideoCapture(path)
         video_lengh = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
         time_list = []
@@ -94,3 +95,6 @@ class videoStream:
                 break
         average_time = sum(time_list) / len(time_list)
         print(average_time)
+
+    def precision_measure(self):
+        return None
