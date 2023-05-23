@@ -1,6 +1,8 @@
 import os
 import cv2 as cv
 import numpy as np
+import TM_KNN.card as TM_KNN_CARD
+import TM.card as TM_CARD
 
 file_dir = os.listdir('validation bilder')
 result = []
@@ -27,7 +29,7 @@ for file in file_dir:
 
 img = cv.imread(r'validation bilder\WIN_20230517_14_48_48_Pro.jpg')
 procImg = card.process(img)
-for pic in procImg:
+for cardImg in procImg:
     cv.imshow('a',pic)
     cv.waitKey(0)
     matchedCard = templateMatch.match(pic)

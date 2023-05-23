@@ -87,19 +87,24 @@ class ObjectDetection:
         
         for i in range(video_lengh):
             
-            start_time = time.perf_counter()
-            ret, frame = cap.read()
-            if not ret:
-                break
-            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            results = self.score_frame(gray)
-            frame = self.plot_boxes(results, frame)
-            end_time = time.perf_counter()
-            time_ms = round(((end_time - start_time) / 1000), 5)
-            time_list.append(time_ms)
-            fps = 1 / np.round(end_time - start_time, 3)
-            #cv.putText(frame, f'FPS: {int(fps)}', (20, 70), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
-            #cv.imshow("img", frame)
+            frameCount += 1
+            
+            if frameCount > 30:
+                frameCount = 0
+                
+                start_time = time.perf_counter()
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+                results = self.score_frame(gray)
+                frame = self.plot_boxes(results, frame)
+                end_time = time.perf_counter()
+                time_ms = round(((end_time - start_time) / 1000), 5)
+                time_list.append(time_ms)
+                fps = 1 / np.round(end_time - start_time, 3)
+                #cv.putText(frame, f'FPS: {int(fps)}', (20, 70), cv.FONT_HERSHEY_COMPLEX, 1.5, (0,0,0), 1)
+                #cv.imshow("img", frame)
             
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break

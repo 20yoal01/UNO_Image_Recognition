@@ -72,8 +72,8 @@ class videoStream:
                 #frame = resize(frame)
                 #Visar en frame av videon och visar denna i 25ms 
                 frameCount += 1
-                if frameCount > 0:
-                    #frameCount = 0
+                if frameCount > 30:
+                    frameCount = 0
                     #cv.imshow('Frame', frame)
                     procImg, pts  = card.process(frame)
                     for i in range(len(procImg)):
