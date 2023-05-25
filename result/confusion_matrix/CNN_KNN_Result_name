@@ -1,0 +1,13 @@
+              precision    recall  f1-score   support
+
+  background      1.000     1.000     1.000        14
+        blue      1.000     0.973     0.986        37
+       green      0.709     1.000     0.830        39
+         red      1.000     0.872     0.932        39
+        wild      1.000     1.000     1.000        13
+      yellow      1.000     0.714     0.833        35
+
+    accuracy                          0.910       177
+   macro avg      0.952     0.927     0.930       177
+weighted avg      0.936     0.910     0.912       177
+

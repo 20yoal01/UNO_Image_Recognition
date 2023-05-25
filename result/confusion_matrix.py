@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 import matplotlib.pyplot as plt
 import os
 
@@ -24,11 +24,17 @@ print(color_pred)
 
 def cm_symbol():
     cm = confusion_matrix(symbol_true, symbol_pred, labels=symbol)
-    plot(cm, False)
+    cr = classification_report(symbol_true, symbol_pred, digits=3)
+    print(cr)
+    np.savetxt(OUTPUTF_FILE + '_' + 'symbol', [cr], fmt="%s", delimiter=",")
+    #plot(cm, False)
     
 def cm_color():
     cm = confusion_matrix(color_true, color_pred, labels=color)
-    plot(cm, True)
+    cr = classification_report(color_true, color_pred, digits=3)
+    print(cr)
+    np.savetxt(OUTPUTF_FILE + '_' + 'name', [cr], fmt="%s", delimiter=",")
+    #plot(cm, True)
 
 def plot(cm, isColor):
     import seaborn as sn

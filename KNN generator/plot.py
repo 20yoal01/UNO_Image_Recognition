@@ -2,13 +2,13 @@ from mpl_toolkits import mplot3d
 import numpy as np
 import matplotlib.pyplot as plt
 
-PATH = 'KNN generator/points/'
+PATH = 'KNN generator/test/'
 
-blue = np.loadtxt(PATH + 'blue_bgr.csv', delimiter=",", dtype=int)
-green = np.loadtxt(PATH + 'green_bgr.csv', delimiter=",", dtype=int)
-red = np.loadtxt(PATH + 'red_bgr.csv', delimiter=",", dtype=int)
+blue = np.loadtxt(PATH + 'new_blue_bgr.csv', delimiter=",", dtype=int)
+green = np.loadtxt(PATH + 'new_green_bgr.csv', delimiter=",", dtype=int)
+red = np.loadtxt(PATH + 'new_red_bgr.csv', delimiter=",", dtype=int)
 #wild = np.loadtxt(PATH + 'wild_bgr.csv', delimiter=",", dtype=int)
-yellow = np.loadtxt(PATH + 'yellow_bgr.csv', delimiter=",", dtype=int)
+yellow = np.loadtxt(PATH + 'new_yellow_bgr.csv', delimiter=",", dtype=int)
 
 print(blue[:,0])
  
@@ -28,7 +28,7 @@ ax.scatter3D(103, 134, 137, color="magenta")
 ax.set_xlabel('hue', fontweight ='bold')
 ax.set_ylabel('saturation', fontweight ='bold')
 ax.set_zlabel('value', fontweight ='bold')
-plt.title("simple 3D scatter plot")
+plt.title("KNN dataset")
  
 
 plt.show()
